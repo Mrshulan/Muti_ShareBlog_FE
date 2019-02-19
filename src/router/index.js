@@ -10,6 +10,15 @@ let config = [
       loader: () => import('../components/articles/articles.jsx'),
       loading: () => <div />
     })
+  },
+  {
+    name: 'articleDetail',
+    path: '/articleDetail',
+    exact: true,
+    component: Loadable({
+      loader: () => import('../components/article/article'),
+      loading: () => <div />
+    })
   }
 ]
 

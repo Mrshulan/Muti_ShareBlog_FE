@@ -76,7 +76,7 @@ class Nav extends Component {
   }
 
   handleLogout = e => {
-    this.setstate({
+    this.setState({
       current: e.key
     })
 
@@ -156,7 +156,7 @@ class Nav extends Component {
                   <SubMenu
                     title={
                       <span className="submunu-title-wrap">
-                        <Icon type='user'/> { "username" }
+                        <Icon type='user'/> { userInfo.name }
                       </span>
                     }
                   >

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal, Input, Icon, message, Button} from 'antd'
-
+import { connect } from 'react-redux'
+import { loginFailure, loginSuccess } from '../../store/actions/user'
 class Login extends Component {
   constructor() {
     super(...arguments)
@@ -8,6 +9,17 @@ class Login extends Component {
       email: '',
       password: ''
     }
+  }
+
+  login = () => {
+    this.props.loginSuccess(Object.assign({}, this.state))
+    let userInfo = {
+      _id: "1",
+      name: this.state.email
+    }
+    window.sessionStorage.userInfo = JSON.stringify(userInfo)
+    this.props.handleCancel();
+		message.success('登录成功', 1);
   }
 
   handleChange = (e) => {
@@ -68,4 +80,4 @@ class Login extends Component {
   }
 }
 
-export default Login
+export default connect(state => state.user, { loginSuccess, loginFailure })(Login)

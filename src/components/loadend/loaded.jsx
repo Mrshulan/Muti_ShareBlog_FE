@@ -4,7 +4,7 @@ class LoadedCom extends Component {
   render() {
     const style = {
       color: '#999',
-      text: 'center',
+      textAlign: 'center',
       padding: 50,
       fontSize: 16
     }

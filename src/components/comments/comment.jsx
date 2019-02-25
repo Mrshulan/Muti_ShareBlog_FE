@@ -9,8 +9,6 @@ class Comment extends Component {
   constructor() {
     super(...arguments)
     this.state = {
-      isLoading: false,
-      content: ''
     }
   }
 
@@ -28,7 +26,7 @@ class Comment extends Component {
         <a className="avatar" href="/">
 					<Avatar className="auth-logo" size={50} icon="user" />
 				</a>
-        <h3>{"userInfo.name"}</h3>
+        <h3>{userInfo.name}</h3>
         <TextArea
           className="textarea"
           name="content"
@@ -44,7 +42,7 @@ class Comment extends Component {
 					) : (
 						<a onClick={this.props.handleAddComment} className="btn btn-send">发送</a>
 					)}
-					<a  className="cancel">
+					<a className="cancel">
 							取消
 					</a>
 				</div>

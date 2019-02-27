@@ -1,3 +1,23 @@
+import marked from 'marked'
+import hljs from 'highlight.js'
+
+// previewRender Markdown语法
+export function translateMarkdown(plainText) {
+  return marked(plainText, {
+    renderer: new marked.Renderer(),
+    gfm: true,
+    pedantic: false,
+    sanitize: false,
+    tables: true,
+    breaks: true,
+    smartLists: true,
+    smartypants: true,
+    hignlignt: function (code) {
+      return hljs.highlightAuto(code).value
+    }
+  })
+} 
+
 // 设置Cookie 100ms 作为视为永久
 export function setCookie(cName, cValue, expireTime) {
   if(expireTime > 0 && expireTime !== '100') {

@@ -7,8 +7,10 @@
     "axios": "^0.18.0",
     "babel-plugin-import": "^1.11.0",
     "customize-cra": "^0.2.11",
+    "highlight.js": "^9.15.5",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
+    "marked": "^0.6.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.2",
     "react-addons-css-transition-group": "^15.6.2",
@@ -20,7 +22,8 @@
     "react-scripts": "2.1.5",
     "react-transition-group": "^2.5.3",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "simplemde": "^1.11.2"
   },
   "scripts": {
     "start": "react-app-rewired start",

@@ -19,6 +19,15 @@ let config = [
       loader: () => import('../components/article/article'),
       loading: () => <div />
     })
+  },
+  {
+    name: 'editor',
+    path: '/editor',
+    exact: true,
+    component: Loadable({
+      loader: () => import('../components/editor/index'),
+      loading: () => <div />
+    })
   }
 ]
 

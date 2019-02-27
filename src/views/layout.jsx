@@ -20,7 +20,7 @@ class Layouts extends Component {
   render() {
     let isShowSlider = false
     let pathName = this.props.location.pathname;
-    if (pathName !== '/articleDetail' && pathName !== '/about') {
+    if (pathName !== '/articleDetail' && pathName !== '/about' && pathName !== '/editor') {
 			isShowSlider = true;
     }
     

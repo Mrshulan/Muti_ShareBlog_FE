@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Layout, Icon, Menu, Row, Col, Button } from 'antd';
+import { Layout, Icon, Menu, Row, Col, Input, Button } from 'antd';
 
 import Login from '../login/login'
 import Register from '../register/register'
@@ -19,6 +19,7 @@ class Nav extends Component {
     this.state = {
       current: null,
       menuCurrent: '',
+      keyword: '',
       visible: false,
       login: false,
       register: false,
@@ -35,13 +36,30 @@ class Nav extends Component {
     })
   }
 
+  handleChange = e => {
+    this.setState({
+      keyword: e.target.value
+    })
+  }
+
+  handleSubmit = e => {
+    const keyword = this.state.keyword
+    if (keyword) {
+      console.log("你将要搜索" + keyword)
+      this.setState({
+        keyword: ''
+      })
+    }
+  }
+
+  
   initMenu = pathName => {
     let key = '1'
     if(pathName === '/') {
       key = "1"
-    } else if (pathName === '/hot') {
+    } else if (pathName === '/hottest') {
       key = '2'
-    } else if (pathName === '/timeLine') {
+    } else if (pathName === '/categories') {
       key = '3'
     } else if (pathName === '/about') {
       key = '4'
@@ -74,13 +92,16 @@ class Nav extends Component {
       register: false
     })
   }
-
   handleLogout = e => {
     this.setState({
       current: e.key
     })
 
     window.sessionStorage.userInfo = ''
+  }
+
+  handleAdmin = () => {
+    window.location = "/admin"
   }
 
   render () {
@@ -107,14 +128,14 @@ class Nav extends Component {
           }}
         >
           <Row className="container">
-            <Col style={{ width: '120px', float: 'left' }}>
+            <Col style={{ float: 'left', marginRight: '20px'}}>
               <a href="http://mrshulan.com">
                 <div className="logo ">
                   <img src={logo} alt="" />
                 </div>
 							</a>
             </Col>
-            <Col style={{width: '780px', float: 'left'}}>
+            <Col style={{ float: 'left', padding:"0px 10px"}}>
               <Menu
                 theme="light"
                 mode='horizontal'
@@ -129,13 +150,13 @@ class Nav extends Component {
                   </Link>
                 </Menu.Item>
                 <Menu.Item key="2">
-                  <Link to="/hot">
+                  <Link to="/hottest">
                     <Icon type="home" theme="outlined" /> 热门
                   </Link>
                 </Menu.Item>
                 <Menu.Item key="3">
-                  <Link to="/timeLine">
-                    <Icon type="home" theme="outlined" /> 时间轴
+                  <Link to="/categories">
+                    <Icon type="home" theme="outlined" /> 分类
                   </Link>
                 </Menu.Item>
                 <Menu.Item key="4">
@@ -145,26 +166,47 @@ class Nav extends Component {
                 </Menu.Item>
               </Menu>
             </Col>
-            <Col style={{ textAlign: 'right', width: '300px', float: 'left' }}>
+            <Col style={{ float: 'left'}}>
+              <Icon type="search" className="searchIcon" onClick={this.handleSubmit}/>
+              <Input 
+                type="text"
+                value={this.state.keyword}
+                onChange={this.handleChange}
+                onPressEnter={this.handleSubmit}
+                placeholder="搜索文章"
+                style={{width: 200}}
+                className='searchIpt'
+              />
+            </Col>
+            <Col style={{ textAlign: 'right', width: '330px', float: 'right' }}>
               {userInfo ? (
-                <Menu
-                  onClick={this.handleLogout}
-                  style={{ width: 220, lineHeight: '64px', display: 'inline-block' }}
-                  selectedKeys={[this.state.current]}
-									mode="horizontal"
-                >
-                  <SubMenu
-                    title={
-                      <span className="submunu-title-wrap">
-                        <Icon type='user'/> { userInfo.name }
-                      </span>
-                    }
+                <div>
+                  <Button
+                  ghost
+                  type="primary"
+                  style={{ marginRight: 20 }}
+                  href='/editor'
                   >
-                    <MenuItemGroup>
-												<Menu.Item key="logout">退出</Menu.Item>
-										</MenuItemGroup>
-                  </SubMenu>
-                </Menu>
+                  发表文章
+                  </Button>
+                  <Menu
+                    style={{ width: 210, lineHeight: '64px', display: 'inline-block' }}
+                    mode="horizontal"
+                  >
+                    <SubMenu
+                      title={
+                        <span className="submunu-title-wrap">
+                          <Icon type='user'/> { userInfo.name }
+                        </span>
+                      }
+                    >
+                      <MenuItemGroup>
+                          <Menu.Item key="admin" onClick={this.handleAdmin}>个人中心</Menu.Item>
+                          <Menu.Item key="logout" onClick={this.handleLogout}>退出</Menu.Item>
+                      </MenuItemGroup>
+                    </SubMenu>
+                  </Menu>
+                </div>
               ) : (<div>
                 <Button
                   type='primary'

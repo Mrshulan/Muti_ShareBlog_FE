@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { Icon, Avatar, message, Button } from 'antd';
-import Comment from '../comments/comment';
-import CommentList from '../comments/list';
 
 import './index.less'
 import logo from '../../assets/logo.jpg'
@@ -11,36 +9,19 @@ import LoadingCom from '../loading/loading';
 import { getQueryStringByName, timestampToTime } from '../../utils/utils';
 
 import dataDetail from '../../utils/data/articleDetail'
+import ArticleComment from '../comments';
 
 class Articles extends Component {
   constructor() {
     super(...arguments)
     this.state = {
       isLoading: false,
-      isSubmitLoading: false,
-      list: [],
-      content: '',
-      type: 1,
-      articleDetail: {
-				_id: '',
-				author: '',
-				category: [],
-				comments: [],
-				create_time: '',
-				desc: '',
-				id: 16,
-				img_url: '',
-				numbers: 0,
-				keyword: [],
-				like_users: [],
-				meta: { views: 0, likes: 0, comments: 0 },
-				origin: 0,
-				state: 1,
-				tags: [],
-				title: '',
-				update_time: '',
-      },
-      
+      title: '是方法',
+      content: '大师法',
+      author: '树懒',
+      categories: ['前端', '后台'],
+      createAt: '1111',
+      commentList: []
     }
   }
 
@@ -143,36 +124,34 @@ class Articles extends Component {
   }
 
   render() {
-    const list = this.state.articleDetail.tags.map((item) => (
-			<span key={item.id} className="tag">
-				{item.name}
+    const list = this.state.categories.map((v) => (
+			<span key={v} className="tag">
+				{v}
 			</span>
 		));
 
     return (
       <div className="article">
         <div className="header">
-          <div className="title">{this.state.articleDetail.title}</div>
+          <div className="title">{this.state.title}</div>
           <div className="author">
             <a href="/" className="avatar">
               <Avatar className="auth-logo" src={logo} size={50} icon="user" />
             </a>
             <div className="info">
               <span className="name">
-                <a href="/">{this.state.articleDetail.author}</a>
+                <a href="/">{this.state.author}</a>
               </span>
               <div props-data-classes="user-follow-button-header" data-author-follow-button="" />
               <div className="meta">
                 <span className="publish-time">
-                  {this.state.articleDetail.create_time
-										? timestampToTime(this.state.articleDetail.create_time, true) :
+                  {this.state.createAt
+										? timestampToTime(this.state.createAt, true) :
                     ''
                   }
                 </span>
-                <span className="wordage">字数 {this.state.articleDetail.numbers}</span>
-								<span className="views-count">阅读 {this.state.articleDetail.meta.views}</span>
-								<span className="comments-count">评论 {this.state.articleDetail.meta.comments}</span>
-								<span className="likes-count">喜欢 {this.state.articleDetail.meta.likes}</span>
+                <span className="wordage">字数 {this.state.content.length}</span>
+								<span className="comments-count">评论 {this.state.commentList.length}</span>
               </div>
             </div>
             <div className="tags " title="标签">
@@ -186,7 +165,7 @@ class Articles extends Component {
         {this.state.isLoading ? <LoadingCom /> : ''}
 
         <div className="content">
-          {this.state.articleDetail.content}
+          {this.state.content}
         </div>
 
         <div className="heart">
@@ -195,23 +174,12 @@ class Articles extends Component {
 						size="large"
 						icon="heart"
 						loading={this.state.isLoading}
-						onClick={this.likeArticle}
+						// onClick={this.likeArticle}
 					>
 						给 ta 点鼓励
 					</Button>
 				</div>
-        <Comment 
-          content={this.state.content}
-          handleChange={this.handleChange}
-          handleAddComment={this.handleAddComment}
-          isSubmitLoading={this.state.isSubmitLoading}
-        />
-        <CommentList
-          numbers={this.state.articleDetail.meta.comments}
-          list={this.state.articleDetail.comments}
-          artice_id={this.state.articleDetail._id}
-          refreshArticle={this.refreshArticle}
-        />
+        <ArticleComment></ArticleComment>
       </div>
     )
   }

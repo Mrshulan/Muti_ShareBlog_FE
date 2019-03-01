@@ -1,34 +1,16 @@
-import React from 'react'
-import Loadable from 'react-loadable'
+import adminRoutes from './admin'
+import homeRoutes from './home'
 
-let config = [
-  {
-    name: '/',
-    path: '/',
-    exact: true,
-    component: Loadable({
-      loader: () => import('../components/articles/articles.jsx'),
-      loading: () => <div />
-    })
-  },
-  {
-    name: 'articleDetail',
-    path: '/articleDetail',
-    exact: true,
-    component: Loadable({
-      loader: () => import('../components/article/article'),
-      loading: () => <div />
-    })
-  },
-  {
-    name: 'editor',
-    path: '/editor',
-    exact: true,
-    component: Loadable({
-      loader: () => import('../components/editor/index'),
-      loading: () => <div />
-    })
-  }
+let routes = [
+  adminRoutes,
+  homeRoutes,
 ]
 
-export default config
+
+function handleIndexRoute(route) {
+  if(!route.childRoutes || !route.childRoutes.length) return
+}
+
+routes.forEach(handleIndexRoute)
+
+export default routes

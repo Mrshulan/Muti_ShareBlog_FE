@@ -20,11 +20,11 @@ export const actions = {
   login: ({ username, password }) => {
     return dispatch => {
       dispatch(appActions.startRequest())
-      axios.post('/login', { username, password }).then(res => {
+      return axios.post('/login', { username, password }).then(res => {
         dispatch(appActions.finishRequest())
         if(res.code === 200) {
-          message.success(res.message)
           localStorage.setItem('token', res.token)
+          message.success(res.message)
           dispatch(actions.setLoginInfo(res.token))
         } else {
           dispatch(appActions.setError(res.message))
@@ -37,12 +37,13 @@ export const actions = {
   register: ({username, password}) => {
     return dispatch => {
       dispatch(appActions.startRequest())
-      axios.post('/register', { username, password }).then(res => {
+      return axios.post('/register', { username, password }).then(res => {
         dispatch(appActions.finishRequest())       
-        if (res.code === 200) {        
+        if (res.code === 200) {     
           message.success(res.message)
         }
         else {
+          message.error(res.message)
           dispatch(appActions.setError(res.message))        
         }
         return res
@@ -57,7 +58,9 @@ export const actions = {
   },
   setLoginInfo: (token) => ({
     type: types.LOGIN,
-    payload: token
+    payload: { 
+      token
+    }
   })  
 }
 

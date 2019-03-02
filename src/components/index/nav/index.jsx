@@ -1,9 +1,12 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment} from 'react'
 import { Link } from 'react-router-dom'
 import { Layout, Icon, Menu, Row, Col, Input, Button } from 'antd';
 
-import Login from '../login'
-import Register from '../register'
+import AuthModal from '../authModal'
+
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { actions as uiActions} from '../../../redux/modules/ui'
 
 import './index.less'
 import logo from '../../../assets/logo.jpg'
@@ -12,20 +15,15 @@ const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
-
 class Nav extends Component {
   constructor() {
     super(...arguments)
     this.state = {
-      current: null,
       menuCurrent: '',
       keyword: '',
-      visible: false,
-      login: false,
-      register: false,
     }
   }
-
+ 
   componentWillReceiveProps(nextProps) {
     this.initMenu(nextProps.pathname)
   }
@@ -42,7 +40,7 @@ class Nav extends Component {
     })
   }
 
-  handleSubmit = e => {
+  handleSearch = e => {
     const keyword = this.state.keyword
     if (keyword) {
       console.log("你将要搜索" + keyword)
@@ -51,7 +49,6 @@ class Nav extends Component {
       })
     }
   }
-
   
   initMenu = pathName => {
     let key = '1'
@@ -72,44 +69,12 @@ class Nav extends Component {
     })
   }
 
-  showLoginModal = () => {
-    this.setState({
-      login: true
-    })
-  }
-  handleLoginCancel = () => {
-    this.setState({
-      login: false
-    })
-  }
-  showRegisterModal = () => {
-    this.setState({
-      register: true
-    })
-  }
-  handleRegisterCancel = () => {
-    this.setState({
-      register: false
-    })
-  }
-  handleLogout = e => {
-    this.setState({
-      current: e.key
-    })
-
-    window.sessionStorage.userInfo = ''
-  }
-
-  handleAdmin = () => {
+  toAdmin = () => {
     window.location = "/admin"
   }
 
   render () {
-    let userInfo = ''
-    
-    if(window.sessionStorage.userInfo) {
-      userInfo = JSON.parse(window.sessionStorage.userInfo)
-    }
+    const { username } = this.props
 
     return (
       <div className="left">
@@ -167,20 +132,20 @@ class Nav extends Component {
               </Menu>
             </Col>
             <Col style={{ float: 'left'}}>
-              <Icon type="search" className="searchIcon" onClick={this.handleSubmit}/>
+              <Icon type="search" className="searchIcon" onClick={this.handleSearch}/>
               <Input 
                 type="text"
                 value={this.state.keyword}
                 onChange={this.handleChange}
-                onPressEnter={this.handleSubmit}
+                onPressEnter={this.handleSearch}
                 placeholder="搜索文章"
                 style={{width: 200}}
                 className='searchIpt'
               />
             </Col>
-            <Col style={{ textAlign: 'right', width: '330px', float: 'right' }}>
-              {userInfo ? (
-                <div>
+            <Col style={{ textAlign: 'right', float: 'right' }}>
+              {username ? (
+                <Fragment>
                   <Button
                   ghost
                   type="primary"
@@ -190,29 +155,29 @@ class Nav extends Component {
                   发表文章
                   </Button>
                   <Menu
-                    style={{ width: 210, lineHeight: '64px', display: 'inline-block' }}
+                    style={{ lineHeight: '64px', display: 'inline-block' }}
                     mode="horizontal"
                   >
                     <SubMenu
                       title={
                         <span className="submunu-title-wrap">
-                          <Icon type='user'/> { userInfo.name }
+                          <Icon type='user'/> { username }
                         </span>
                       }
                     >
                       <MenuItemGroup>
-                          <Menu.Item key="admin" onClick={this.handleAdmin}>个人中心</Menu.Item>
+                          <Menu.Item key="admin" onClick={this.toAdmin}>个人中心</Menu.Item>
                           <Menu.Item key="logout" onClick={this.handleLogout}>退出</Menu.Item>
                       </MenuItemGroup>
                     </SubMenu>
                   </Menu>
-                </div>
-              ) : (<div>
+                </Fragment>
+              ) : (<Fragment>
                 <Button
                   type='primary'
                   icon='login'
                   style={{ marginRight: '15px'}}
-                  onClick={this.showLoginModal}
+                  onClick={() => this.props.openAuthModal('login')}
                 >
                   登录
                 </Button>
@@ -220,20 +185,28 @@ class Nav extends Component {
                   type="danger"
                   icon="logout"
                   style={{ marginRight: '15px'}}
-                  onClick={this.showRegisterModal}
+                  onClick={() => this.props.openAuthModal('register')}
                 >
                   注册
                 </Button>
-              </div>)}
+              </Fragment>)}
             </Col>
           </Row>
-        </Header>
-        
-        <Login visible={this.state.login} handleCancel={this.handleLoginCancel}/>
-        <Register visible={this.state.register} handleCancel={this.handleRegisterCancel} />
+        </Header>        
+        <AuthModal />
       </div>
     )
   }
 }
 
-export default Nav
+const mapStateToProps = (state) => ({
+  username: state.auth.username,
+})
+
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(uiActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Nav)

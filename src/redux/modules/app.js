@@ -18,8 +18,9 @@ export const actions = {
   finishRequest: () => ({
     type: types.FINISH_REQUEST
   }),
-  setError: () => ({
-    type: types.SETERROR
+  setError: (error) => ({
+    type: types.SET_ERROR,
+    error
   }),
   removeError: () => ({
     type: types.REMOVE_ERROR

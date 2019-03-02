@@ -4,7 +4,7 @@ import { message } from 'antd'
 // process.env.BASE_URL',process.env.BASE_URL
 let service = axios.create({
   baseURL: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:6060' : '', // api的base_url
-  timeout: 50000, // 请求超时时间
+  timeout: 20000, // 请求超时时间
 })
 
 

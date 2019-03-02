@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { NavLink, } from 'react-router-dom'
 import { Menu, Icon } from 'antd'
 
-import routes from  '../../../router/admin'
+import routes from  '../../../routes/admin'
 
 const SubMenu = Menu.SubMenu
 

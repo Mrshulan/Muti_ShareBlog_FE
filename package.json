@@ -8,6 +8,7 @@
     "babel-plugin-import": "^1.11.0",
     "customize-cra": "^0.2.11",
     "highlight.js": "^9.15.5",
+    "jwt-decode": "^2.2.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "marked": "^0.6.1",

@@ -1,11 +1,11 @@
 import React, { Component, Fragment} from 'react'
-import { Link } from 'react-router-dom'
-import { Layout, Icon, Menu, Row, Col, Input, Button } from 'antd';
+import { Link,withRouter } from 'react-router-dom'
+import { Layout, Icon, Menu, Row, Col, Input, Button, Avatar } from 'antd';
 
 import AuthModal from '../authModal'
-
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { actions as authActions} from '../../../redux/modules/auth'
 import { actions as uiActions} from '../../../redux/modules/ui'
 
 import './index.less'
@@ -70,7 +70,7 @@ class Nav extends Component {
   }
 
   toAdmin = () => {
-    window.location = "/admin"
+    this.props.history.push('/admin')
   }
 
   render () {
@@ -161,13 +161,13 @@ class Nav extends Component {
                     <SubMenu
                       title={
                         <span className="submunu-title-wrap">
-                          <Icon type='user'/> { username }
+                          <Avatar src={'http://127.0.0.1:6001' + this.props.avatar} /> { username }
                         </span>
                       }
                     >
                       <MenuItemGroup>
                           <Menu.Item key="admin" onClick={this.toAdmin}>个人中心</Menu.Item>
-                          <Menu.Item key="logout" onClick={this.handleLogout}>退出</Menu.Item>
+                          <Menu.Item key="logout" onClick={this.props.logout}>退出</Menu.Item>
                       </MenuItemGroup>
                     </SubMenu>
                   </Menu>
@@ -201,12 +201,14 @@ class Nav extends Component {
 
 const mapStateToProps = (state) => ({
   username: state.auth.username,
+  avatar: state.auth.avatar
 })
 
 const mapDispatchToProps = dispatch => {
   return {
-    ...bindActionCreators(uiActions, dispatch)
+    ...bindActionCreators(uiActions, dispatch),
+    ...bindActionCreators(authActions, dispatch)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Nav)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Nav))

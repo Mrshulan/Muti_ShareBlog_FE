@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { Upload, Icon, message } from 'antd'
 
+import { bindActionCreators } from 'redux'
+import { connect } from "react-redux"
+import { actions as authActions } from '../../../../redux/modules/auth'
+
 import './index.less'
 
 function getBase64(img, callback) {
@@ -10,15 +14,11 @@ function getBase64(img, callback) {
 }
 
 function beforeUpload(file) {
-  const isJPG = file.type === 'image/jpeg';
-  if (!isJPG) {
-    message.error('You can only upload JPG file!');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024  < 2;
   if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
+    message.error('请上传不大于2M的图片')
   }
-  return isJPG && isLt2M;
+  return isLt2M
 }
 
 class AvatarCol extends Component {
@@ -37,6 +37,8 @@ class AvatarCol extends Component {
         imageUrl,
         loading: false,
       }));
+      message.success(info.file.response.message)
+      this.props.updateAvatar(info.file.response.avatar)
     }
   }
 
@@ -44,7 +46,7 @@ class AvatarCol extends Component {
     const uploadButton = (
       <div>
         <Icon type={this.state.loading ? 'loading' : 'plus'} />
-        <div className="ant-upload-text">Upload</div>
+        <div className="ant-upload-text">点击上传</div>
       </div>
     );
     const imageUrl = this.state.imageUrl;
@@ -54,14 +56,20 @@ class AvatarCol extends Component {
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="//jsonplaceholder.typicode.com/posts/"
+        action="http://127.0.0.1:6001/upload"
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
+        withCredentials={true}
       >
         {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
-        <span>Image must smaller than 2MB</span>
+        <span>图片不大于2Mb</span>
       </Upload>
     );
   }
 }
-export default AvatarCol
+
+const mapDispatchToProps = dispatch => ({
+    ...bindActionCreators(authActions, dispatch)    
+})
+
+export default connect(null, mapDispatchToProps)(AvatarCol)

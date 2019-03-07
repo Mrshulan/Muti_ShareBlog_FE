@@ -9,6 +9,7 @@ import 'simplemde/dist/simplemde.min.css'
 
 import './index.less'
 import { translateMarkdown } from '../../../utils/utils'
+import axios from '../../../utils/axios'
 
 class Edit extends Component {
   state = {
@@ -33,12 +34,11 @@ class Edit extends Component {
       content: this.smde.value(),
     }
 
-    // 一些axios
-    Modal.confirm({
-      title: '文章创建成功~'
+    axios.put('/article', params).then(res => {
+      Modal.confirm({
+        title: res.message
+      })
     })
-
-    console.log(params)
   }
 
   handleChange = (e) => {

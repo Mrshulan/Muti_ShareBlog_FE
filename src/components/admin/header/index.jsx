@@ -1,14 +1,18 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
+import { bindActionCreators } from 'redux'
+import { connect} from 'react-redux'
+import { Avatar,Button, Icon, Dropdown, Menu } from 'antd'
 
-import { Button, Icon, Dropdown, Menu } from 'antd'
+import { actions as authActions } from '../../../redux/modules/auth'
 
 import './index.less'
 
 class Header extends Component {
   
   handleLogout = () => {
-    console.log('退出成功')
-    this.props.history.push('/login')
+    this.props.logout()
+    // this.props.history.push('admin/login')
   }
 
   renderDropDownMenu = () => {
@@ -26,7 +30,7 @@ class Header extends Component {
 
 
   render () {
-    const { collapsed } = this.props
+    const { collapsed, username, avatar} = this.props
 
     return (
       <div className="admin-header-container">       
@@ -38,7 +42,7 @@ class Header extends Component {
         <div className="header-right">
           <Dropdown overlay={this.renderDropDownMenu()}>
             <span>
-              "avatar"
+              <Avatar src={'http://localhost:6001' + avatar} /> { username }
             </span>
           </Dropdown>
         </div>
@@ -47,4 +51,15 @@ class Header extends Component {
   }
 }
 
-export default Header
+const mapStateToProps = (state) => ({
+  username: state.auth.username,
+  avatar: state.auth.avatar
+})
+
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(authActions, dispatch)
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header))

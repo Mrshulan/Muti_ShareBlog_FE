@@ -20,23 +20,26 @@ export function translateMarkdown(plainText) {
 
 // 设置Cookie 100ms 作为视为永久
 export function setCookie(cName, cValue, expireTime) {
-  if(expireTime > 0 && expireTime !== '100') {
-    let preDate = new Date()
-    preDate.setDate(preDate.getDate() + expireTime)
-    document.cookie = cName + '=' + escape(cValue) + (expireTime === null ? '' : ';expires=' + preDate.toGMTString())
+  if(expireTime > 0 && expireTime !== 100) {
+    let preDate = new Date().getTime()
+    preDate += expireTime
+    document.cookie = cName + '=' + escape(cValue) + (expireTime === null ? '' : ';expires=' + new Date(preDate))
+  } else if (expireTime <= 0) {
+    document.cookie = cName + '=' + escape(cValue) + (expireTime === null ? '' : ';expires= -1')
   }
 
-  if(expireTime === '100') {
+  if(expireTime === 100) {
     let preDate = new Date('2099-01-01 00:00:00');
 		document.cookie = cName + '=' + escape(cValue) + (expireTime == null ? '' : ';expires=' + preDate.toGMTString());
   }
+
 }
 
 // 获取指定Cookie
 export function getCookie(cName) {
   if(document.cookie.length > 0) {
     let cStart = document.cookie.indexOf(cName + '=')
-    if(cStart > 0) {
+    if(cStart >=0 ) {
       cStart = cStart + cName.length + 1
       let cEnd = document.cookie.indexOf(';', cStart)
       if (cEnd === -1) cEnd = document.cookie.length
@@ -49,16 +52,7 @@ export function getCookie(cName) {
 
 // 删除指定cookie中的值
 export function delCookie(cName) {
-  let preDate = new Date()
-  preDate.setTime(preDate.getDate() - 1)
-  let cValue = getCookie(cName)
-  if (cValue !== '') {
-    document.cookie = cName + '=' + cValue + ';expires=' + preDate.toGMTString();
-  }
-}
-// 清除cookie
-export function clearCookie(cName) {
-  setCookie(cName, '', -1);
+  setCookie(cName, '', -1)
 }
 
 // 获取QueryString数组

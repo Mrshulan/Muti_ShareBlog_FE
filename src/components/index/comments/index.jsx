@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
-import { Comment, Avatar, Form, Button, Divider, Input, Icon, Menu, Dropdown, message } from 'antd'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { actions as uiActions } from '../../../redux/modules/ui'
+import { actions as authActions } from '../../../redux/modules/auth'
 
+import CommentsList from './commentsList'
 
 import './index.less'
+import { Comment, Avatar, Form, Button, Divider, Input, Icon, Menu, Dropdown, message } from 'antd'
+import axios from '../../../utils/axios'
 
 const { TextArea } = Input
 
-const Editor = ({ onChange, onSubmit, submitting, value, articleId }) => (
+const Editor = ({ onChange, onSubmit, submitting, value }) => (
   <div>
     <Form.Item>
       <TextArea row={4} placeholder="说点什么吧" onChange={onChange} value={value} />
@@ -16,23 +22,47 @@ const Editor = ({ onChange, onSubmit, submitting, value, articleId }) => (
         <i className="iconfont icon-tips"></i>
         <span className='support-tip'>支持Markdown语法</span>
         <Button className="" htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
-          {articleId !== -1 ? '添加评论' : '留言'}
+          添加评论
         </Button>
       </div>
     </Form.Item>
   </div>
 )
 
-class ArticleComment extends Component {
+class ArticleComments extends Component {
   state = {
     submitting: false,
     value: ''
   }
 
-
   handleSubmit = () => {
-    if (!this.state.value) return
-    console.log(this.state.value)
+    if (!this.state.value) {
+      message.error('评论内容不能为空')
+    }
+    this.setState({ submitting: true })
+    const content = this.state.value
+    axios.put('/comment', {
+      article: this.props.articleId,
+      content
+    }).then(res => {
+      message.success(res.message)
+      this.setState({ submitting: false, value: '' }, () => {
+        const created = new Date()
+        const newComment = {
+          _id: created,
+          from: {
+            username: this.props.username,
+            avatar: this.props.avatar,
+          },
+          content,
+          created,
+        }
+        this.props.addCommentsList(newComment)
+      })
+    }).catch(err => {
+      message.error(err.message)
+      this.setState({ submitting: false })
+    })
   }
 
   handleChange = (e) => {
@@ -42,47 +72,42 @@ class ArticleComment extends Component {
   handleMenuClick = e => {
     let event = e.key
     if(event === 'login') {
-      console.log('login')
+      this.props.openAuthModal('login')
     } else if(event === 'register') {
-      console.log('register')
+      this.props.openAuthModal('register')
     } else if(event === 'logout') {
-      console.log('logout')
+      this.props.logout()
     }
   }
 
   renderDropdownMenu = () => {
-    // const { username } = this.props
-
-    // return 'username' ? (
-    //   <Menu onClick={this.handleMenuClick}>
-    //     <Menu.Item key="logout">注销</Menu.Item>
-    //   </Menu>
-    // ) : (
-    //   <Menu onClick={this.handleMenuClick}>
-    //     <Menu.Item key="login">登录</Menu.Item>
-    //     <Menu.Item key="register">注册</Menu.Item>
-    //   </Menu>
-    // )
-
-    return (
+    const { username } = this.props
+    return username ? (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="logout">注销</Menu.Item>
+        <Menu.Item key="logout">
+        <Icon type='user' />退出</Menu.Item>
+      </Menu>
+    ) : (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="login">登录</Menu.Item>
+        <Menu.Item key="register">注册</Menu.Item>
       </Menu>
     )
   }
 
   render() {
     const { submitting, value } = this.state
+    const { username, avatar, commentsList} = this.props
 
     return (
       <div className="comment-wrapper">
         <div className="comment-header">
-          <span className="count">{'getCommentsCount(commentList)'}</span>{' '}
-          {'articleId' !== -1 ? '条评论' : '条留言'}
+          <span className="count">{commentsList.length}</span>
+          {' '}条评论
           <span className="menu-wrap">
             <Dropdown overlay={this.renderDropdownMenu()} trigger={['click', 'hover']}>
               <span>
-                {"username" ? "username" : '未登录用户'} <Icon type="down" />
+                {username ? username : '未登录用户'} <Icon type="down" />
               </span>
             </Dropdown>
           </span>
@@ -91,8 +116,8 @@ class ArticleComment extends Component {
         <Comment 
           avatar={(
             <Avatar
-              src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              alt="Han Solo"
+              src={"http://127.0.0.1:6001" + avatar}
+              alt={username}
             />
           )}
           content={
@@ -101,14 +126,25 @@ class ArticleComment extends Component {
               onSubmit={this.handleSubmit}
               submitting={submitting}
               value={value}
-              articleId={'articleId'}
             />
           }
         />
-
+        <CommentsList list={commentsList}></CommentsList>
       </div>
     )
   }
 }
 
-export default ArticleComment
+const mapStateToProps = (state) => ({
+  username: state.auth.username,
+  avatar: state.auth.avatar
+})
+
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(uiActions, dispatch),
+    ...bindActionCreators(authActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleComments)

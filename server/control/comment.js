@@ -27,12 +27,11 @@ exports.save = async ctx => {
       Article.updateOne({
           _id: data.article
         }, {
-          $set: {
+          $inc: {
             commentNum: 1
           }
         }, err => {
           if (err) return console.log(err)
-          console.log("评论计数器更新成功")
         })
 
       User

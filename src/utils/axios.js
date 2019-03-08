@@ -28,7 +28,7 @@ service.interceptors.request.use(
 // respone拦截器 axios的一些配置
 service.interceptors.response.use(
 	response => {
-		if (response.data.code === 401 && response.data.message) message.warning(response.data.message)
+		if (response.data.status === 403 && response.data.message) message.error(response.data.message)
 		return response.data
 	},
 	error => {

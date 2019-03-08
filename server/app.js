@@ -17,7 +17,6 @@ app.keys = ["secret "]
 
 const CONFIG = {
   key: "MRSHULAN",
-  maxAge: 1000 * 60 * 60,
   signed: false,
 }
 

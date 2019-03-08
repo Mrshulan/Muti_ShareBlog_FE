@@ -55,6 +55,9 @@ export const actions = {
   },
   logout: () => {
     delCookie('token')
+    axios.get('/logout').then(res => {
+      message.success(res.message)
+    })
     return {
       type: types.LOGOUT
     }

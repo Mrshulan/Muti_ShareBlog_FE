@@ -5,8 +5,8 @@ const Comment = require("../Models/comment")
 // 文章评论保存
 exports.save = async ctx => {
   let message = {
-    status: 0,
-    msg: "登录才能发表"
+    status: 403,
+    message: "登录才能发表"
   }
 
   if (ctx.session.isNew) return ctx.body = message;
@@ -75,7 +75,7 @@ exports.del = async ctx => {
   const commentId = ctx.params.id;
 
   let res = {
-    state: 1,
+    state: 200,
     message: "删除成功"
   }
   // 不能绕过remove方法使用deleteOne(勾不住钩子)
@@ -83,38 +83,10 @@ exports.del = async ctx => {
     .then(data => data.remove())
     .catch(err => {
       res = {
-        state: 0,
+        status: 403,
         message: err
       }
     })
 
   ctx.body = res
-
-  //  无钩子的代码
-  // let isOk = true;
-  // let articleId, uid;
-
-  // await Comment.findById(commentId, (err, data) => {
-  //     if(err) {
-  //         console.log(err)
-  //         isOk = false
-  //         return
-  //     } else {
-  //         articleId = data.article
-  //         uid = data.from
-  //     }
-  // })
-
-  // await Article
-  //     .update({_id: articleId}, {$inc: {commentNum: -1}})
-  // await User
-  //     .update({_id: uid}, {$inc: {commentNum: -1}});
-  // await Comment.deleteOne({_id: commentId})
-
-  // if(isOk){
-  //     ctx.body = {
-  //         state: 1,
-  //         message: "删除成功"
-  //     }
-  // }
 }

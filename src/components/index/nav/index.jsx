@@ -70,7 +70,7 @@ class Nav extends Component {
   }
 
   toAdmin = () => {
-    this.props.history.push('/admin')
+    this.props.history.push('/user')
   }
 
   render () {

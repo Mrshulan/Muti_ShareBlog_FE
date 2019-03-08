@@ -2,17 +2,13 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect} from 'react-redux'
-import { Avatar,Button, Icon, Dropdown, Menu } from 'antd'
-
+import { Avatar, Icon, Dropdown, Menu } from 'antd'
 import { actions as authActions } from '../../../redux/modules/auth'
-
 import './index.less'
 
-class Header extends Component {
-  
+class Header extends Component { 
   handleLogout = () => {
     this.props.logout()
-    // this.props.history.push('admin/login')
   }
 
   renderDropDownMenu = () => {

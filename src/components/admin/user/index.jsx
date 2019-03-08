@@ -1,14 +1,29 @@
 import React, { Component } from 'react'
 import { Table, Button, Modal, message } from 'antd'
-
+import axios from '../../../utils/axios'
 
 
 class UsersCol extends Component {
   state = {
     list: [],
-    pagination: {}
+    total: 0,
   }
 
+  componentDidMount() {
+    this.fetchList()
+  }
+  fetchList = () => {
+    axios.get('/user/users').then(res => {
+      if(res.status === 200) {
+        this.setState({
+          total: res.count,
+          list: res.data
+        })
+      } else {
+        message.error(res.message)
+      }
+    })
+  }
   getColumns = () => {
     return [
       {
@@ -17,46 +32,44 @@ class UsersCol extends Component {
       },
       {
         title: '文章数',
-        dataIndex: 'articles',      
+        dataIndex: 'articleNum',      
       },
       {
         title: '评论数',
-        dataIndex: 'comments',
-        // render: text => getCommentsCount(text),
-        // sorter: (a, b) => getCommentsCount(a.comments) - getCommentsCount(b.comments)
+        dataIndex: 'commentNum',
       },
       {
         title: '操作',
-        render: (text, record) => <Button type="danger" onClick={() => this.handleDelete(record.id, record.username)}>删除</Button>
+        render: (text, record) => <Button type="danger" onClick={() => this.handleDelete(record._id, record.username)}>删除</Button>
       }
     ]
   }
 
   handleDelete = (userId, username) => {
     Modal.confirm({
-      title: '您确认删除该用户?，此操作不可恢复！',
+      title: '您确认删除该用户? 此操作不可恢复！',
       content: `用户： ${username} `,
       onOk: () => {
-        // axios.delete('/user/delete', { params: { userId } }).then(res => {
-        //   if (res.code === 200) {
-        //     this.fetchList(this.state.pagination)
-        //     message.success(res.message)
-        //   }
-        // })
+        axios.delete('/user/' + userId).then(res => {
+          if (res.status === 200) {
+            this.fetchList()
+            message.success(res.message)
+          } else {
+            message.success(res.message)
+          }
+        })
       }
     })
   }
   render() {
-    const { list, pagination } = this.state
+    const { list } = this.state
 
     return (
       <Table
-        rowKey="id"
+        rowKey="_id"
         bordered
         columns={this.getColumns()}
         dataSource={list}
-        pagination={pagination}
-        onChange={this.handleChange}
       />
     )
   }

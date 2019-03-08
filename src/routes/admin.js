@@ -8,8 +8,8 @@ import InfoManage from "../components/admin/info/avatar/index"
 import NotFound from '../components/404/index'
 
 export default {
-  path: 'admin',
-  name: 'admin',
+  path: 'user',
+  name: 'user',
   component: Layout,
   childRoutes: [
     {
@@ -19,7 +19,7 @@ export default {
       component: Home,
     },
     {
-      path: 'user',
+      path: 'users',
       name: '用户管理', 
       icon: 'user', 
       component: UsersManage

@@ -21,16 +21,13 @@ router.post("/register", user.reg)
 router.post("/login", user.login)
 
 // 用户退出
-router.get("/user/logout", user.logout)
-
-// 文章的发表页面
-router.get('/article', user.keepLog, article.addPage)
+router.get("/logout", user.logout)
 
 // 文章添加
 router.put("/article", user.keepLog, article.add)
 
 // 文章获取列表
-router.get('/articlesList', user.keepLog, article.getArticleList)
+router.get('/articlesList', article.getArticleList)
 
 // //文章列表分页 路由
 // router.get("/page/:id", article.getArticleList)
@@ -46,7 +43,14 @@ router.get("/admin/:id", user.keepLog, admin.index)
 
 
 // 头像上传
-router.post("/upload", user.keepLog, upload.single("avatar"), user.upload)
+router.post("/upload", (ctx => {
+  if (ctx.session.isNew) {
+    return ctx.body = {
+      message: "用户未登录,上传失败!",
+      status: 403
+    }
+  }
+}), upload.single("avatar"), user.upload)
 
 // 获取用户的所有评论
 router.get("/user/comments", user.keepLog, comment.comlist)

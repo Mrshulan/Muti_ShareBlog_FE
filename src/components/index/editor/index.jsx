@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { Button, Input, Modal, BackTop } from 'antd'
 import SelectCate from './categories'
 
-
 import SimpleMDE from "simplemde"
 import 'simplemde/dist/simplemde.min.css'
 
@@ -35,9 +34,11 @@ class Edit extends Component {
     }
 
     axios.put('/article', params).then(res => {
-      Modal.confirm({
-        title: res.message
-      })
+      if(res.status === 200) {
+        Modal.confirm({
+          title: res.message
+        })
+      }
     })
   }
 

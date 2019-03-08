@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { NavLink, } from 'react-router-dom'
 import { Menu, Icon } from 'antd'
-
 import routes from  '../../../routes/admin'
+import { connect } from 'react-redux'
 
 const SubMenu = Menu.SubMenu
 
@@ -21,6 +21,7 @@ class Siderbar extends Component {
 
   renderMenu = data => {
     const renderRoute = (item, routeContextPath) => {
+      if(this.props.role === '1' && item.path === 'users') return 
       let newContextPath = item.path ? `${routeContextPath}/${item.path}` : routeContextPath
       if(item.childRoutes) {
         return (
@@ -50,7 +51,7 @@ class Siderbar extends Component {
       }
     }
 
-    return data.childRoutes.map(d => renderRoute(d, '/admin'))
+    return data.childRoutes.map(d => renderRoute(d, '/user'))
   }
 
   onOpenChange = openKeys => {
@@ -77,4 +78,8 @@ class Siderbar extends Component {
   }
 }
 
-export default Siderbar
+const mapStateToProps = (state) => ({
+    role: state.auth.role
+})
+
+export default connect(mapStateToProps)(Siderbar)

@@ -45,20 +45,23 @@ class ArticleComments extends Component {
       article: this.props.articleId,
       content
     }).then(res => {
-      message.success(res.message)
-      this.setState({ submitting: false, value: '' }, () => {
-        const created = new Date()
-        const newComment = {
-          _id: created,
-          from: {
-            username: this.props.username,
-            avatar: this.props.avatar,
-          },
-          content,
-          created,
-        }
-        this.props.addCommentsList(newComment)
-      })
+      if(res.status === 200) {
+        message.success(res.message)
+        this.setState({ value: '' }, () => {
+          const created = new Date()
+          const newComment = {
+            _id: created,
+            from: {
+              username: this.props.username,
+              avatar: this.props.avatar,
+            },
+            content,
+            created,
+          }
+          this.props.addCommentsList(newComment)
+        })
+      }
+      this.setState({ submitting: false })    
     }).catch(err => {
       message.error(err.message)
       this.setState({ submitting: false })

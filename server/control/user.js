@@ -43,13 +43,13 @@ exports.reg = async ctx => {
       if (data) {
         response = { code: 200, message: '注册成功' }
       } else {
-        response = { code: 400, message: '用户名已被注册' }
+        response = { code: 403, message: '用户名已被注册' }
       }
 
       ctx.body = response
     })
     .catch(async err => {
-      ctx.body = { code: 400, message: '注册失败' }
+      ctx.body = { code: 403, message: '注册失败' }
     })
 }
 
@@ -75,13 +75,12 @@ exports.login = async ctx => {
     })
     .then(async data => {
       if (!data) {
-        response = { code: 400, message: '密码不正确' }
+        response = { code: 403, message: '密码不正确' }
       } else {
         // session里记录一遍
         ctx.session = {
           username,
           uid: data[0]._id,
-          avatar: data[0].avatar,
           role: data[0].role
         }
 
@@ -113,9 +112,10 @@ exports.keepLog = async (ctx, next) => {
 
 // 用户退出中间件
 exports.logout = async ctx => {
+  ctx.body = {
+    message:'退出成功'
+  }
   ctx.session = null
-  // 在后台重定向到 根
-  ctx.redirect("/")
 }
 
 // 用户的头像上传
@@ -148,10 +148,10 @@ exports.upload = async ctx => {
 
 // admin 管理员查看用户
 exports.usrlist = async ctx => {
-  const data = await User.find().exec()
+  const data = await User.find({role: '1'}).exec()
 
   ctx.body = {
-    code: 0,
+    status: 200,
     count: data.length,
     data
   }
@@ -162,7 +162,7 @@ exports.del = async ctx => {
   const uid = ctx.params.id
 
   let res = {
-    state: 1,
+    status: 200,
     message: '删除成功'
   }
 
@@ -170,7 +170,7 @@ exports.del = async ctx => {
     .then(data => data.remove())
     .catch(err => {
       res = {
-        state: 0,
+        state: 400,
         message: err
       }
     })

@@ -37,7 +37,11 @@ class AvatarCol extends Component {
         imageUrl,
         loading: false,
       }));
-      message.success(info.file.response.message)
+      if(info.file.response.status === 200) {
+        message.success(info.file.response.message)
+      } else {
+        message.error(info.file.response.message)       
+      }
       this.props.updateAvatar(info.file.response.avatar)
     }
   }

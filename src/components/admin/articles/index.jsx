@@ -1,16 +1,25 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Table, Divider, Tag, Modal, message } from 'antd'
-
-
-import './index.less'
+import axios from '../../../utils/axios'
+import { timestampToTime } from '../../../utils/utils'
 
 class ArticleCol extends Component {
-
   state = {
     list: [],
-    pagination: {},
     total: 0
+  }
+  componentDidMount() {
+    this.fetchList()
+  }
+  
+  fetchList = () => {
+    axios.get('/user/articles').then(res => {
+      this.setState({
+        list: res.data,
+        total: res.count
+      })
+    })
   }
 
   getColumns = () => {
@@ -23,25 +32,28 @@ class ArticleCol extends Component {
         title: '分类',
         dataIndex: 'categories',
         render: (text, record) => {
-          return text.map(d => (
-            <Tag color={'#2db7f5'} key={d.name}>
-              {d.name}
+          return text.map(v => (
+            <Tag color={'#2db7f5'} key={v}>
+              {v}
             </Tag>
           ))
         }
       },
       {
         title: '发布时间',
-        dataIndex: 'createdAt'
+        dataIndex: 'created',
+        render: (text) => {
+          return timestampToTime(text, true)
+        }
       },
       {
         title: '操作',
         render: (text, record) => {
           return (
-            <div className="action">
-              <Link to={`/article/${record.id}`}>查看</Link>
+            <div className="action" key={record._id}>
+              <Link to={`/article/${record._id}`}>查看</Link>
               <Divider type="vertical" />
-              <span className="btn-delete" onClick={() => this.handleDelete(record.id, record.title)}>
+              <span className="btn-delete" onClick={() => this.handleDelete(record._id, record.title)}>
                 删除
               </span>
             </div>
@@ -53,30 +65,28 @@ class ArticleCol extends Component {
 
   handleDelete = (articleId, title) => {
     Modal.confirm({
-      title: '您确认删除该文章?，此操作不可恢复！',
-      content: `文章： ${title} `,
+      title: '您确认删除该文章?此操作不可恢复!',
+      content: `文章: ${title} `,
       onOk: () => {
-        // delete('/article/delete', { params: { articleId } }).then(res => {
-        //   if (res.code === 200) {
-        //     this.fetchList(this.state.pagination)
-        //     message.success(res.message)
-        //   }
-        // })
+        axios.delete('/article/'+ articleId).then(res => {
+          if (res.status === 200) {
+            message.success(res.message)
+            this.fetchList()
+          }
+        })
       }
     })
   }
   render() {
-    const { list,pagination } = this.state
+    const { list } = this.state
 
     return (
       <div className="manager">
         <Table
-          rowKey="id"
+          rowKey="_id"
           bordered
           columns={this.getColumns()}
           dataSource={list}
-          pagination={pagination}
-          onChange={this.handleChange}
         />
       </div>
     )

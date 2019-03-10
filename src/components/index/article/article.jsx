@@ -3,7 +3,7 @@ import { Icon, Avatar, message, Button } from 'antd';
 
 import './index.less'
 import logo from '../../../assets/logo.jpg'
-import LoadingCom from '../loading';
+import LoadingCom from '../load/loading';
 import { translateMarkdown, timestampToTime } from '../../../utils/utils';
 import axios from '../../../utils/axios'
 import ArticleComments from '../comments';
@@ -45,8 +45,6 @@ class ArticleDetail extends Component {
         createdAt: created,
         commentsList: commentsList,
       })
-
-      document.title = title
     }).catch(err => {
       this.props.history.push('/404')
     })
@@ -79,7 +77,7 @@ class ArticleDetail extends Component {
   }
 
   render() {
-    const { title, content ,author, categories, createdAt, commentsList, likeStatus, likesCount} = this.state
+    const { isArticleLoaded, title, content ,author, categories, createdAt, commentsList, likeStatus, likesCount} = this.state
     const list = categories.map((v) => (
 			<span key={v} className="tag">
 				{v}
@@ -116,7 +114,7 @@ class ArticleDetail extends Component {
           </div>
         </div>
 
-        {this.state.isArticleLoaded ? '' : <LoadingCom /> }
+        {isArticleLoaded ? '' : <LoadingCom /> }
 
         <div className="article-detail" dangerouslySetInnerHTML={{ __html: content }} />
 

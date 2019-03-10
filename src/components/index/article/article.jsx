@@ -13,9 +13,11 @@ class ArticleDetail extends Component {
     super(...arguments)
     this.state = {
       isArticleLoaded: false,
+      likeStatus: false,
       title: '',
       content: '',
       author: '',
+      likesCount: 0,
       categories: [],
       createdAt: '',
       commentsList: []
@@ -32,13 +34,14 @@ class ArticleDetail extends Component {
     axios.get('/article/' + id).then(res => {
       const { article, commentsList } = res
       const content = translateMarkdown(article.content)
-      const { title, author,created, categories } = article
+      const { title, author,created, categories, likeNum } = article
       this.setState({
         isArticleLoaded: true,
         title,
         author: author.username,
         content,
         categories,
+        likesCount: likeNum,
         createdAt: created,
         commentsList: commentsList,
       })
@@ -56,10 +59,17 @@ class ArticleDetail extends Component {
   }
 
   likeArticle = () => {
-    message.success("喜欢成功")
-    setTimeout(() => {
-      message.error("该功能暂未开放", 1)
-    }, 1000)
+    axios.post('/article/like', {
+      articleId: this.props.match.params.id
+    }).then(res => {
+       if(res.status === 200) {
+         message.success(res.message)
+       }
+       this.setState({
+        likeStatus: true,
+        likesCount: this.state.likesCount + 1
+       })
+    })
   } 
 
   addCommentsList = item => {
@@ -69,7 +79,7 @@ class ArticleDetail extends Component {
   }
 
   render() {
-    const { isArticleLoaded, title, content ,author, categories, createdAt, commentsList } = this.state
+    const { title, content ,author, categories, createdAt, commentsList, likeStatus, likesCount} = this.state
     const list = categories.map((v) => (
 			<span key={v} className="tag">
 				{v}
@@ -91,9 +101,10 @@ class ArticleDetail extends Component {
               <div props-data-classes="user-follow-button-header" data-author-follow-button="" />
               <div className="meta">
                 <span className="publish-time">
-                  {timestampToTime(createdAt, true)}
+                  发表于: {timestampToTime(createdAt, true)}
                 </span>
                 <span className="wordage">字数 {content.length}</span>
+								<span className="likes-count">点赞 {likesCount}</span>
 								<span className="comments-count">评论 {commentsList.length}</span>
               </div>
             </div>
@@ -113,8 +124,8 @@ class ArticleDetail extends Component {
 					<Button
 						type="danger"
 						size="large"
-						icon="heart"
-						loading={!isArticleLoaded}
+            icon="heart"
+            disabled={likeStatus}
 						onClick={this.likeArticle}
 					>
 						给 ta 点鼓励

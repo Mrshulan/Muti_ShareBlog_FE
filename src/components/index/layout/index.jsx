@@ -37,7 +37,7 @@ class Layouts extends Component {
             </Layout>
           </Content>
           <Footer style={{ textAlign: 'center', background: '#fff' }}>
-            树懒先生
+              © 2018-2019&nbsp;<a href='https://mrshulan.com' target='_blank' rel="noopener noreferrer">@树懒先生sir</a>&nbsp;湘ICP备18021596号-1
           </Footer>
           <BackTop />
         </Layout>

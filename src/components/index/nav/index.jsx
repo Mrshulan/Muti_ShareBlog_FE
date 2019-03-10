@@ -1,6 +1,6 @@
 import React, { Component, Fragment} from 'react'
 import { Link,withRouter } from 'react-router-dom'
-import { Layout, Icon, Menu, Row, Col, Input, Button, Avatar } from 'antd';
+import { Layout, Icon, Menu, Row, Col, Input, Button, Avatar ,message} from 'antd';
 
 import AuthModal from '../authModal'
 import { bindActionCreators } from 'redux'
@@ -44,6 +44,7 @@ class Nav extends Component {
     const keyword = this.state.keyword
     if (keyword) {
       console.log("你将要搜索" + keyword)
+      message.error('该功能暂未开发')
       this.setState({
         keyword: ''
       })

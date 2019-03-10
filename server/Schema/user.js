@@ -6,7 +6,7 @@ const UserSchema = new Schema({
   password: String,
   role: {
     type: String,
-    default: 1
+    default: '1'
   },
   avatar: {
     type: String,

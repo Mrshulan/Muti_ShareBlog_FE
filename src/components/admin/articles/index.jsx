@@ -45,8 +45,13 @@ class ArticleCol extends Component {
         render: (text) => {
           return timestampToTime(text, true)
         }
-      },
-      {
+      },{
+        title: '评论数',
+        dataIndex: 'commentNum'
+      },{
+        title: '点赞数',
+        dataIndex: 'likeNum'
+      },{
         title: '操作',
         render: (text, record) => {
           return (

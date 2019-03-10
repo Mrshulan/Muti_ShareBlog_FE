@@ -7,7 +7,7 @@ import { getCookie ,setCookie, delCookie } from '../../utils/utils'
 let initialState = {
   userId: null,
   username: '',
-  role: 1,
+  role: '1',
   avatar: ''
 }
 
@@ -26,7 +26,7 @@ export const actions = {
       return axios.post('/login', { username, password }).then(res => {
         dispatch(appActions.finishRequest())
         if(res.code === 200) {
-          setCookie('token', res.token, 100)
+          setCookie('token', res.token, 1000 * 60 * 60)
           message.success(res.message)
           dispatch(actions.setLoginInfo(res.token))
         } else {
@@ -88,8 +88,8 @@ const reducer = (state = initialState, action) => {
   const { type, payload } = action
   switch(type) {
     case types.LOGIN:
-      const { userId, username, avatar } = jwtDecode(payload.token)
-      return { ...state, userId, username, avatar }
+      const { userId, username, avatar, role } = jwtDecode(payload.token)
+      return { ...state, userId, username, avatar, role}
     case types.LOGOUT:
       return { userId: null, username: '',role: 0, avatar: ''}
     case types.UPDATEAVATAR:

@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 
 exports.enToken = info => {
   const token = jwt.sign(info, 'mrshulan', { expiresIn: '1h' })
-  console.log('generated token', token)
   return token
 }
 

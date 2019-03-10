@@ -23,14 +23,14 @@ export function setCookie(cName, cValue, expireTime) {
   if(expireTime > 0 && expireTime !== 100) {
     let preDate = new Date().getTime()
     preDate += expireTime
-    document.cookie = cName + '=' + escape(cValue) + (expireTime === null ? '' : ';expires=' + new Date(preDate))
+    document.cookie = cName + '=' + escape(cValue) + (expireTime === null ? '' : '; path=/; expires=' + new Date(preDate))
   } else if (expireTime <= 0) {
-    document.cookie = cName + '=' + escape(cValue) + (expireTime === null ? '' : ';expires= -1')
+    document.cookie = cName + '=' + escape(cValue) + (expireTime === null ? '' : '; path=/; expires= -1')
   }
 
   if(expireTime === 100) {
     let preDate = new Date('2099-01-01 00:00:00');
-		document.cookie = cName + '=' + escape(cValue) + (expireTime == null ? '' : ';expires=' + preDate.toGMTString());
+		document.cookie = cName + '=' + escape(cValue) + (expireTime == null ? '' : '; path=/ ; expires=' + preDate.toGMTString());
   }
 
 }

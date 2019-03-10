@@ -36,10 +36,15 @@ class Edit extends Component {
     axios.put('/article', params).then(res => {
       if(res.status === 200) {
         Modal.confirm({
-          title: res.message
+          title: res.message,
+          onOk: () => {
+            this.props.history.push('/')
+          }
         })
       }
     })
+
+    
   }
 
   handleChange = (e) => {

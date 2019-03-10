@@ -53,17 +53,16 @@ exports.add = async ctx => {
 
 // 获取文章列表
 exports.getArticleList = async ctx => {
-  let { page = 1, pageSize = 10 } = ctx.query
-  let offset = (page - 1) * pageSize
-
+  let { page = 1, pageSize = 5 } = ctx.query
+  pageSize = +pageSize
   page--
   const total = await Article.find().then(data => data.length)
 
   const artList = await Article
     .find()
     .sort("-created")
-    .skip(10 * page)
-    .limit(10)
+    .skip(pageSize * page)
+    .limit(pageSize)
     .populate({
       path: "author",
       select: "_id username avatar"
@@ -74,7 +73,6 @@ exports.getArticleList = async ctx => {
   ctx.body = {
     artList,
     total,
-    offset
   }
 }
 
@@ -102,6 +100,40 @@ exports.details = async ctx => {
     article,
     commentsList,
   }
+}
+
+exports.like = async ctx => {
+  let message = {
+    status: 403,
+    message: "登录才能发表"
+  }
+
+  if (ctx.session.isNew) {
+    return  ctx.body = message
+  }
+  // 更新点赞数据
+  const { articleId } = ctx.request.body
+
+  Article.updateOne({
+    _id: articleId
+    },{
+      $inc: {
+        likeNum: 1
+      }
+    }, err => {
+      if (err)  {
+        console.log(err)
+        message = {
+          status: 403,
+          message: err
+        }
+      }
+      ctx.body = message
+    })
+    ctx.body = {
+      status: 200,
+      message: '喜欢成功~'
+    }
 }
 
 // admin 文章列表

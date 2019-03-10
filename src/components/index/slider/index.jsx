@@ -26,6 +26,9 @@ class SliderRight extends Component {
         },
         {
           name: '后台'
+        },
+        {
+          name: '数据库'
         }
       ],
     }

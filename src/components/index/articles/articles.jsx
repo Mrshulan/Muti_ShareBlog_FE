@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Icon, Tag, Divider, Pagination, Empty} from 'antd';
-import { CSSTransition } from 'react-transition-group'
-import LoadingCom from '../loading'
-import LoadedCom from '../loadend'
+import { Icon, Tag, Divider, Pagination, Empty,} from 'antd';
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import LoadingCom from '../load/loading'
+import LoadedCom from '../load/loadend'
 
 import './index.less'
 import axios from '../../../utils/axios'
@@ -24,7 +24,7 @@ class Articles extends Component {
       keyword: '',
       isArticlesLoaded: false,
       articlesList: [],
-      total: 10,
+      total: 5,
       page: 1
     }
   }
@@ -34,12 +34,11 @@ class Articles extends Component {
   }
 
   fetchList = ({ page, keyword }) => {
-    axios.get('/articlesList', { params: { page, pageSize: 10 } })
+    axios.get('/articlesList', { params: { page, pageSize: 5 } })
       .then(res => {
         this.setState({
           isArticlesLoaded: true,
           articlesList: res.artList, 
-          page: res.offset + 1,
           total: res.total
        })
       })  
@@ -59,6 +58,8 @@ class Articles extends Component {
     this.setState({
       page: page
     })
+    this.fetchList({page})
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
   }
 
   translateMarkdownToDesc = (content) => {
@@ -72,7 +73,6 @@ class Articles extends Component {
 
   render() {
     const { articlesList, total, isArticlesLoaded, page, keyword } = this.state
-
     const list = articlesList.map((item) => (
       <CSSTransition
         in={isArticlesLoaded}
@@ -103,6 +103,9 @@ class Articles extends Component {
 
             <div className="meta">
 							<a href={`/article/${item._id}`}>
+								<Icon type="like" theme="outlined" /> {item.likeNum}
+							</a>&nbsp;
+							<a href={`/article/${item._id}`}>
 								<Icon type="message" theme="outlined" /> {item.commentNum}
 							</a>&nbsp;
               <span className="time">{timestampToTime(item.created)}</span>
@@ -113,16 +116,18 @@ class Articles extends Component {
     ))
 
     return (
-      <div className="left">
+      <div className="left" ref={(left) => { this.left = left}}>
         <ul className="article-list">
-          {list}
+          <TransitionGroup>
+            {list}
+          </TransitionGroup>
         </ul>
         {
           articlesList.length > 0 ? (
             <div>
               {articlesList.length <= total && (
                 <div style={{ textAlign: 'right' }}>
-                  <Pagination current={parseInt(page)}  onChange={this.handlePageChange} total={total} />
+                  <Pagination current={page} pageSize={5} onChange={this.handlePageChange} total={total} />
                 </div>
               )}
             </div>

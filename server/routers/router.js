@@ -1,11 +1,11 @@
+const { deToken } = require('../util/token')
+
 const Router = require('koa-router')
 // 拿到操作各个表（集合）的逻辑对象
 const user = require('../control/user')
 const article = require('../control/article')
 const comment = require("../control/comment")
-const admin = require("../control/admin")
-
-const upload = require("../util/upload")
+const upload = require("../util/upload");
 
 
 const router = new Router()
@@ -29,28 +29,26 @@ router.put("/article", user.keepLog, article.add)
 // 文章获取列表
 router.get('/articlesList', article.getArticleList)
 
-// //文章列表分页 路由
-// router.get("/page/:id", article.getArticleList)
-
+// 文章点赞
+router.post('/article/like', user.keepLog, article.like)
 // 文章详情页 路由
 router.get("/article/:id", user.keepLog, article.details)
 
 // 发表评论
 router.put("/comment", user.keepLog, comment.save)
 
-// 文章评论头像上传
-router.get("/admin/:id", user.keepLog, admin.index)
-
 
 // 头像上传
-router.post("/upload", (ctx => {
-  if (ctx.session.isNew) {
+router.post("/upload", async (ctx, next) => {
+
+  if (!ctx.cookies.get('token')) {
     return ctx.body = {
       message: "用户未登录,上传失败!",
       status: 403
     }
   }
-}), upload.single("avatar"), user.upload)
+  await next()
+}, upload.single("avatar"), user.upload)
 
 // 获取用户的所有评论
 router.get("/user/comments", user.keepLog, comment.comlist)

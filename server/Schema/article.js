@@ -4,7 +4,14 @@ const ObjectId = Schema.Types.ObjectId
 const ArticleSchema = new Schema({
   title: String,
   content: String,
-  commentNum: Number,
+  commentNum: {
+    type: Number,
+    default: 0
+  },
+  likeNum: {
+    type: Number,
+    default: 0
+  },
   author: {
     type: ObjectId,
     ref: "users"

@@ -60,7 +60,7 @@ class AvatarCol extends Component {
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="http://127.0.0.1:6001/upload"
+        action="http://mrshulan.xin/api/upload"
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
         withCredentials={true}

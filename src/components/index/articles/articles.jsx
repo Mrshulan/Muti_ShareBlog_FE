@@ -82,7 +82,7 @@ class Articles extends Component {
       >
         <li key={item._id} className='article-item have-img'>
           <a className="wrap-img" href={`/article/${item._id}`} >
-						<img className="img-blur-done" data-src={item.author.avatar} src={"http://127.0.0.1:6001" + item.author.avatar} alt="120" />
+						<img className="img-blur-done" data-src={item.author.avatar} src={"http://mrshulan.xin" + item.author.avatar} alt="120" />
 					</a>
           <div className="content">
             <Divider orientation="left" onClick={() => this.jumpTo(item._id)}> 

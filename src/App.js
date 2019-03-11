@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch,   Route } from 'react-router-dom'
-// import Layouts from './views/layout'
 import routes from './routes/index.js'
 
 
@@ -36,7 +35,7 @@ class App extends Component {
   render() {
     const children = this.renderRoutes(routes, '/')
     return (
-      <Router>
+      <Router basename="/blog">
         {children}
       </Router>
     );

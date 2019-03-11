@@ -151,7 +151,7 @@ class Nav extends Component {
                   ghost
                   type="primary"
                   style={{ marginRight: 20 }}
-                  href='/editor'
+                  href='editor'
                   >
                   发表文章
                   </Button>
@@ -162,7 +162,7 @@ class Nav extends Component {
                     <SubMenu
                       title={
                         <span className="submunu-title-wrap">
-                          <Avatar src={'http://127.0.0.1:6001' + this.props.avatar} /> { username }
+                          <Avatar src={'http://mrshulan.xin' + this.props.avatar} /> { username }
                         </span>
                       }
                     >

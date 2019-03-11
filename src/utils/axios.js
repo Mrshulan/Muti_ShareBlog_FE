@@ -4,7 +4,7 @@ import { getCookie } from '../utils/utils'
 
 // process.env.BASE_URL',process.env.BASE_URL
 let service = axios.create({
-  baseURL: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:6001' : '', // api的base_url
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:6001' : 'http://mrshulan.xin:6001/api', // api的base_url
 	timeout: 20000, // 请求超时时间
 	withCredentials: true // 允许携带cookie
 })

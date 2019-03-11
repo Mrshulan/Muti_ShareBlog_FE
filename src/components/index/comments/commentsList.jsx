@@ -9,7 +9,7 @@ const CommentItem = (({ item }) => {
       author={from.username}
       avatar={(
         <Avatar
-          src={'http://127.0.0.1:6001' + from.avatar}
+          src={'http://mrshulan.xin' + from.avatar}
           alt={from.username}
         />
       )}

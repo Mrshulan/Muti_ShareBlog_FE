@@ -119,7 +119,7 @@ class ArticleComments extends Component {
         <Comment 
           avatar={(
             <Avatar
-              src={"http://127.0.0.1:6001" + avatar}
+              src={"http://mrshulan.xin" + avatar}
               alt={username}
             />
           )}

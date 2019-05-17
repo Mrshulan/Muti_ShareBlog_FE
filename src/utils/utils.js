@@ -1,5 +1,5 @@
 import marked from 'marked'
-import hljs from 'highlight.js'
+// import hljs from 'highlight.js'
 
 // previewRender Markdown语法
 export function translateMarkdown(plainText) {
@@ -13,7 +13,7 @@ export function translateMarkdown(plainText) {
     smartLists: true,
     smartypants: true,
     hignlignt: function (code) {
-      return hljs.highlightAuto(code).value
+      return window.hljs.highlightAuto(code).value
     }
   })
 } 

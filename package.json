@@ -2,7 +2,6 @@
   "name": "muti_shareblog_fe",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://mrshulan.xin/blog",
   "dependencies": {
     "@babel/core": "7.2.2",
     "@svgr/webpack": "4.1.0",
@@ -12,7 +11,6 @@
     "babel-eslint": "9.0.0",
     "babel-jest": "23.6.0",
     "babel-loader": "8.0.5",
-    "babel-plugin-import": "^1.11.0",
     "babel-plugin-named-asset-import": "^0.3.1",
     "babel-preset-react-app": "^7.0.2",
     "bfj": "6.1.1",
@@ -29,7 +27,6 @@
     "eslint-plugin-react": "7.12.4",
     "file-loader": "2.0.0",
     "fs-extra": "7.0.1",
-    "highlight.js": "^9.15.6",
     "html-webpack-plugin": "4.0.0-alpha.2",
     "identity-obj-proxy": "3.0.0",
     "jest": "23.6.0",
@@ -37,8 +34,6 @@
     "jest-resolve": "23.6.0",
     "jest-watch-typeahead": "^0.2.1",
     "jwt-decode": "^2.2.0",
-    "less": "^3.9.0",
-    "less-loader": "^4.1.0",
     "marked": "^0.6.1",
     "mini-css-extract-plugin": "0.5.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
@@ -133,11 +128,19 @@
       "react-app"
     ],
     "plugins": [
-      ["import", {
-        "libraryName": "antd",
-        "libraryDirectory": "es",
-        "style": true
-      }]
+      [
+        "import",
+        {
+          "libraryName": "antd",
+          "libraryDirectory": "es",
+          "style": true
+        }
+      ]
     ]
+  },
+  "devDependencies": {
+    "babel-plugin-import": "^1.11.2",
+    "less": "^3.9.0",
+    "less-loader": "^5.0.0"
   }
 }

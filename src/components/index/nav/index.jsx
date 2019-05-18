@@ -151,9 +151,10 @@ class Nav extends Component {
                   ghost
                   type="primary"
                   style={{ marginRight: 20 }}
-                  href='editor'
                   >
-                  发表文章
+                  <Link to="/editor">
+                    发表文章
+                  </Link>
                   </Button>
                   <Menu
                     style={{ lineHeight: '64px', display: 'inline-block' }}

@@ -2,6 +2,7 @@ import { message } from 'antd'
 import { actions as appActions } from './app'
 import axios from '../../utils/axios'
 import jwtDecode from 'jwt-decode'
+import md5 from 'md5'
 import { getCookie ,setCookie, delCookie } from '../../utils/utils'
 
 let initialState = {
@@ -23,7 +24,7 @@ export const actions = {
   login: ({ username, password }) => {
     return dispatch => {
       dispatch(appActions.startRequest())
-      return axios.post('/login', { username, password }).then(res => {
+      return axios.post('/login', { username, password: md5(password + username) }).then(res => {
         dispatch(appActions.finishRequest())
         if(res.code === 200) {
           setCookie('token', res.token, 1000 * 60 * 60)
@@ -40,7 +41,7 @@ export const actions = {
   register: ({username, password}) => {
     return dispatch => {
       dispatch(appActions.startRequest())
-      return axios.post('/register', { username, password }).then(res => {
+      return axios.post('/register', { username, password: md5(password + username)}).then(res => {
         dispatch(appActions.finishRequest())       
         if (res.code === 200) {     
           message.success(res.message)

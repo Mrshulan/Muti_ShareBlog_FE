@@ -1,6 +1,7 @@
 const User = require("../Models/user")
 const encrypt = require("../util/encrypt")
 const { enToken, deToken } = require('../util/token')
+const rand = require('csprng')
 
 // 用户注册
 exports.reg = async ctx => {
@@ -20,11 +21,12 @@ exports.reg = async ctx => {
         if (data.length !== 0) {
           return resolve("")
         }
-
+        const vkey = rand(160, 36)
         // 用User模子new一个	数据记录行/文档BSON 记得用模块导出的函数加密 函数返回的是加密后的数据
         const _user = new User({
           username,
-          password: encrypt(password),
+          password: encrypt({password, vkey}),
+          vkey,
           commentNum: 0,
           articleNum: 0
         })
@@ -58,16 +60,15 @@ exports.login = async ctx => {
   // 拿到 post数据
   const { username, password } = ctx.request.body
   let response
-
   await new Promise((resolve, reject) => {
       User.find({
         username
       }, (err, data) => {
         if (err) return reject(err)
         if (data.length === 0) return reject("用户名不存在")
-
+        console.log(data[0])
         // 数据库中的加密密码是否和输入的加密一致，
-        if (data[0].password === encrypt(password)) {
+        if (data[0].password === encrypt({password, vkey: data[0].vkey})) {
           return resolve(data)
         }
         resolve("")

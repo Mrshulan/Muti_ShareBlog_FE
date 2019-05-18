@@ -4,6 +4,7 @@ const { Schema } = require('./config')
 const UserSchema = new Schema({
   username: String,
   password: String,
+  vkey: String,
   role: {
     type: String,
     default: '1'

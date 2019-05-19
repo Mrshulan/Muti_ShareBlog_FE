@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { message } from 'antd'
-import { getCookie } from '../utils/utils'
 
 // process.env.BASE_URL',process.env.BASE_URL
 let service = axios.create({
@@ -12,10 +11,10 @@ let service = axios.create({
 // request拦截器 axios的一些配置
 service.interceptors.request.use(
 	config => {
-		const token = getCookie('token')
-		if(token) {
-			config.headers.common['Authorization'] = 'mrshulan' + token
-		}
+		// const token = getCookie('token')
+		// if(token) {
+		// 	config.headers.common['Authorization'] = 'mrshulan' + token
+		// }
 		return config
 	},
 	error => {
@@ -28,7 +27,9 @@ service.interceptors.request.use(
 // respone拦截器 axios的一些配置
 service.interceptors.response.use(
 	response => {
-		if (response.data.status === 403 && response.data.message) message.error(response.data.message)
+		if ((response.data.status === 403 && response.data.message) || response.data.status === -1) {
+			message.error(response.data.message)
+		}
 		return response.data
 	},
 	error => {

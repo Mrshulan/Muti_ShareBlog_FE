@@ -1,15 +1,17 @@
 import { message } from 'antd'
 import { actions as appActions } from './app'
 import axios from '../../utils/axios'
-import jwtDecode from 'jwt-decode'
 import md5 from 'md5'
 import { getCookie ,setCookie, delCookie } from '../../utils/utils'
+import Storage from '../../utils/storage'
 
+const cache = new Storage()
+const { userId, username, role, avatar} = cache.get('info') || {}
 let initialState = {
-  userId: null,
-  username: '',
-  role: '1',
-  avatar: ''
+  userId: userId || null,
+  username: username || '',
+  role: role || '1',
+  avatar: avatar || ''
 }
 
 export const types = {
@@ -26,10 +28,13 @@ export const actions = {
       dispatch(appActions.startRequest())
       return axios.post('/login', { username, password: md5(password + username) }).then(res => {
         dispatch(appActions.finishRequest())
-        if(res.code === 200) {
-          setCookie('token', res.token, 1000 * 60 * 60)
+        console.log(res.status)
+        if(res.status === 200) {
+          const { userId, username, role, avatar } = res
+          const data = { userId, username, role, avatar }
+          cache.set('info', data, 86400000)
           message.success(res.message)
-          dispatch(actions.setLoginInfo(res.token))
+          dispatch(actions.setLoginInfo(data))
         } else {
           dispatch(appActions.setError(res.message))
         }
@@ -43,7 +48,7 @@ export const actions = {
       dispatch(appActions.startRequest())
       return axios.post('/register', { username, password: md5(password + username)}).then(res => {
         dispatch(appActions.finishRequest())       
-        if (res.code === 200) {     
+        if (res.status === 200) {     
           message.success(res.message)
         }
         else {
@@ -55,9 +60,12 @@ export const actions = {
     }
   },
   logout: () => {
-    delCookie('token')
     axios.get('/logout').then(res => {
+      console.log('logout')
       message.success(res.message)
+      // delCookie('MRSHULAN')
+      // delCookie('MRSHULAN.sig')
+      cache.remove('info')
     })
     return {
       type: types.LOGOUT
@@ -69,29 +77,27 @@ export const actions = {
       path
     }
   }),
-  setLoginInfo: (token) => ({
+  setLoginInfo: (payload) => ({
     type: types.LOGIN,
-    payload: { 
-      token
-    }
+    payload
   })  
 }
 
 // 解决刷新之后无法保持住state
-const token = getCookie('token')
-if (token && token !== "undefined") {
-  const { userId, username, role, avatar} = jwtDecode(token)
-  initialState = Object.assign(initialState, { userId, username, role , avatar })
-}
+// const token = getCookie('token')
+// if (token && token !== "undefined") {
+  // const { userId, username, role, avatar} = jwtDecode(token)
+  // initialState = Object.assign(initialState, { userId, username, role , avatar })
+// }
 
 
 const reducer = (state = initialState, action) => {
   const { type, payload } = action
   switch(type) {
     case types.LOGIN:
-      const { userId, username, avatar, role } = jwtDecode(payload.token)
-      return { ...state, userId, username, avatar, role}
-    case types.LOGOUT:
+      const { userId, username, avatar, role } = payload
+      return { ...state, userId, username, avatar, role }
+      case types.LOGOUT:
       return { userId: null, username: '',role: 0, avatar: ''}
     case types.UPDATEAVATAR:
       return {...state, avatar: action.payload.path }

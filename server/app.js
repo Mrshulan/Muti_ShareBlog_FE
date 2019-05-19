@@ -5,7 +5,7 @@ const session = require('koa-session')
 const cors = require("@koa/cors")
 const staticSource = require('koa-static')
 const router = require('./routers/router')
-
+const { SessionStore } =require('./Models/sessionStore')
 
 const {
   join
@@ -13,13 +13,36 @@ const {
 
 const app = new Koa()
 
-app.keys = ["secret "]
+app.keys = ["secret"]
 
 const CONFIG = {
   key: "MRSHULAN",
-  signed: false,
+  maxAge: 86400000,
+  overwrite: true,
+  httpOnly: true, // 只能同构http协议来修改session cookie
+  signed: true, // 哈希签名
+  sameSite: 'strict', // 防止大部分浏览器的xsrf
+  store: new SessionStore()
 }
 
+// 被踢出后中间件
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch(err) {
+    if(/data/.test(err.message)) {
+      // 覆盖koa-session的返回
+      ctx.cookies.set('MRSHULAN', '')
+      ctx.cookies.set('MRSHULAN.sig', '')
+      ctx.body = {
+        status: -1,
+        message: '被迫登出,请重新登录'
+      }
+    } else {
+      console.error(err)
+    }
+  }
+})
 // 跨域
 app.use(cors({
   origin: 'http://127.0.0.1:3000',

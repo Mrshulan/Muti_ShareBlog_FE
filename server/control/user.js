@@ -1,6 +1,6 @@
 const User = require("../Models/user")
+const { Session } = require('../Models/sessionStore')
 const encrypt = require("../util/encrypt")
-const { enToken, deToken } = require('../util/token')
 const rand = require('csprng')
 
 // 用户注册
@@ -8,7 +8,6 @@ exports.reg = async ctx => {
   // ctx.request.body 接受注册时 post发过来的数据
   const { username, password } = ctx.request.body
   let response
-
   // 给个promise承诺 
   await new Promise((resolve, reject) => {
       // 1、先去数据库里边查一下是否有这个用户
@@ -43,15 +42,15 @@ exports.reg = async ctx => {
     .then(async data => {
       // then 也是异步 所以都是用async await进行先操作
       if (data) {
-        response = { code: 200, message: '注册成功' }
+        response = { status: 200, message: '注册成功' }
       } else {
-        response = { code: 403, message: '用户名已被注册' }
+        response = { status: 403, message: '用户名已被注册' }
       }
 
       ctx.body = response
     })
     .catch(async err => {
-      ctx.body = { code: 403, message: '注册失败' }
+      ctx.body = { status: 403, message: '注册失败' }
     })
 }
 
@@ -66,7 +65,6 @@ exports.login = async ctx => {
       }, (err, data) => {
         if (err) return reject(err)
         if (data.length === 0) return reject("用户名不存在")
-        console.log(data[0])
         // 数据库中的加密密码是否和输入的加密一致，
         if (data[0].password === encrypt({password, vkey: data[0].vkey})) {
           return resolve(data)
@@ -76,35 +74,33 @@ exports.login = async ctx => {
     })
     .then(async data => {
       if (!data) {
-        response = { code: 403, message: '密码不正确' }
+        response = { status: 403, message: '密码不正确' }
       } else {
-        // session里记录一遍
+        // 剔除其他设备的用户
+        await Session.deleteMany({'data.uid':  data[0]._id})
+        // 成功登录 保存新session
         ctx.session = {
           username,
           uid: data[0]._id,
           role: data[0].role
         }
-
-        const token = enToken({ username, userId: data[0]._id, avatar: data[0].avatar, role: data[0].role})
-        // 成功登录
-        response = { code: 200, message: '登录成功', username, token }
+        response = { status: 200, message: '你已经登录成功', username, userId: data[0]._id, avatar: data[0].avatar, role: data[0].role }
       }
       ctx.body = response
     })
     .catch(async err => {
-      ctx.body = { code: 400, message: err }
+      ctx.body = { status: 400, message: err }
     })
 }
 
-// 确定和记录 用户的状态
+// 确定和记录 保证同一个session信息不会永久有效，又能让正常的、频繁使用的用户免除登录
 exports.keepLog = async (ctx, next) => {
-  if (ctx.session.isNew) { // 若要是未登录状态
-    const token = ctx.cookies.get("token")
-    if (token) {
-      const { username, userId} = deToken(token)
+  const currentTime = Date.now()
+  if (currentTime <= ctx.session._expire) { // 有效期间内
+    // 快要过期的一个小时续期
+    if(0 < ctx.session._expire - currentTime && ctx.session._expire - currentTime < 60 * 60 * 1000) {
       ctx.session = {
-        username: username,
-        uid: userId
+        ...ctx.session
       }
     }
   }

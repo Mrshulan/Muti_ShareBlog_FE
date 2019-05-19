@@ -38,8 +38,8 @@ class Articles extends Component {
       .then(res => {
         this.setState({
           isArticlesLoaded: true,
-          articlesList: res.artList, 
-          total: res.total
+          articlesList: res.artList || [], 
+          total: res.total || 0
        })
       })  
   }
@@ -73,7 +73,7 @@ class Articles extends Component {
 
   render() {
     const { articlesList, total, isArticlesLoaded, page, keyword } = this.state
-    const list = articlesList.map((item) => (
+    const list = articlesList && articlesList.map((item) => (
       <CSSTransition
         in={isArticlesLoaded}
         key={item._id}

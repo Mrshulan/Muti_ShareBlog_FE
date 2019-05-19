@@ -12,7 +12,6 @@
   "dependencies": {
     "@koa/cors": "^2.2.3",
     "csprng": "^0.1.2",
-    "jsonwebtoken": "^8.5.0",
     "koa": "^2.7.0",
     "koa-body": "^4.0.8",
     "koa-convert": "^1.2.0",

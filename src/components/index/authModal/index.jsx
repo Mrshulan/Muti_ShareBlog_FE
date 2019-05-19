@@ -32,7 +32,7 @@ class AuthModal extends Component {
 
       if(username && password) {
         this.props.login({ username, password }).then(res => {
-          if (res.code === 200) this.props.closeAuthModal('login')
+          if (res.status === 200) this.props.closeAuthModal('login')
         })
       } else {
         message.error('请务必填写完整')
@@ -51,7 +51,7 @@ class AuthModal extends Component {
         
         if(this.passwordConfirm.state.value === this.state.password) {     
           this.props.register({ username, password }).then(res => {
-            if (res.code === 200) this.props.closeAuthModal('register')
+            if (res.status === 200) this.props.closeAuthModal('register')
           })
         } else {
           message.error('两次密码不一致')

@@ -14,7 +14,7 @@ import logo from '../../../assets/logo.jpg'
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
-
+const isPro = process.env.NODE_ENV === 'production'
 class Nav extends Component {
   constructor() {
     super(...arguments)
@@ -163,7 +163,7 @@ class Nav extends Component {
                     <SubMenu
                       title={
                         <span className="submunu-title-wrap">
-                          <Avatar src={'http://mrshulan.xin' + this.props.avatar} /> { username }
+                          <Avatar src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + this.props.avatar} /> { username }
                         </span>
                       }
                     >

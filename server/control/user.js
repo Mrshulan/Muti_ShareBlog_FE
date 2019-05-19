@@ -10,7 +10,7 @@ exports.reg = async ctx => {
   let response
   // 给个promise承诺 
   await new Promise((resolve, reject) => {
-      // 1、先去数据库里边查一下是否有这个用户
+      // 先去数据库里边查一下是否有这个用户
       User.find({
         username
       }, (err, data) => {
@@ -135,7 +135,7 @@ exports.upload = async ctx => {
         message: '上传成功',
         avatar: "/avatar/" + filename
       }
-      ctx.session.avatar = "/avatar/" + filename
+      // ctx.session.avatar = "/avatar/" + filename
     }
   })
   

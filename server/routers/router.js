@@ -1,5 +1,3 @@
-const { deToken } = require('../util/token')
-
 const Router = require('koa-router')
 // 拿到操作各个表（集合）的逻辑对象
 const user = require('../control/user')
@@ -40,8 +38,7 @@ router.put("/comment", user.keepLog, comment.save)
 
 // 头像上传
 router.post("/upload", async (ctx, next) => {
-
-  if (!ctx.cookies.get('token')) {
+  if (!ctx.cookies.get('MRSHULAN')) {
     return ctx.body = {
       message: "用户未登录,上传失败!",
       status: 403

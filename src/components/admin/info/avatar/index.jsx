@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Upload, Icon, message } from 'antd'
-
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
 import { actions as authActions } from '../../../../redux/modules/auth'
 
 import './index.less'
+
+const isPro = process.env.NODE_ENV === 'production'
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -60,7 +61,7 @@ class AvatarCol extends Component {
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="http://mrshulan.xin/api/upload"
+        action={isPro ? "http://mrshulan.xin/api/upload" : 'http://127.0.0.1:6001/upload'}
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
         withCredentials={true}

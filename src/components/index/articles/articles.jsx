@@ -6,8 +6,9 @@ import LoadedCom from '../load/loadend'
 
 import './index.less'
 import axios from '../../../utils/axios'
-import { translateMarkdown,timestampToTime } from '../../../utils/utils'
+import { translateMarkdown, timestampToTime } from '../../../utils/utils'
 
+const isPro = process.env.NODE_ENV === 'production'
 
 const NoData = ({ keyword }) => (
   <React.Fragment>
@@ -82,7 +83,7 @@ class Articles extends Component {
       >
         <li key={item._id} className='article-item have-img'>
           <a className="wrap-img" href={`/article/${item._id}`} >
-						<img className="img-blur-done" data-src={item.author.avatar} src={"http://mrshulan.xin" + item.author.avatar} alt="120" />
+						<img className="img-blur-done" data-src={item.author.avatar} src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + item.author.avatar} alt="摘要图片" />
 					</a>
           <div className="content">
             <Divider orientation="left" onClick={() => this.jumpTo(item._id)}> 

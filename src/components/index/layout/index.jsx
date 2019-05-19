@@ -4,7 +4,6 @@ import { Layout, BackTop } from 'antd'
 import Nav from '../nav/'
 import SliderRight from '../slider'
 
-
 import './index.less'
 
 const { Content, Footer, Sider } = Layout;

@@ -1,22 +1,21 @@
 const User = require("../Models/user")
 const Article = require("../Models/article")
 const Comment = require("../Models/comment")
+const Like = require('../Models/like')
 
 // 文章的发表(保存到数据库)
 exports.add = async ctx => {
-  if (ctx.session.isNew) {
-    // true没登录 就不需要查询数据库
-    return ctx.body = {
-      message: "用户未登录",
-      status: 403
-    }
-  }
+  // if (ctx.session.isNew) {
+  //   // true没登录 就不需要查询数据库
+  //   return ctx.body = {
+  //     message: "用户未登录",
+  //     status: 403
+  //   }
+  // }
 
-  // 用户登录发表 post发来的数据
   const data = ctx.request.body
   // 主动添加一下文章的作者的uid
   data.author = ctx.session.uid;
-  data.commentNum = 0;
 
   await new Promise((resolve, reject) => {
       new Article(data).save((err, data) => {
@@ -53,13 +52,13 @@ exports.add = async ctx => {
 
 // 获取文章列表
 exports.getArticleList = async ctx => {
-  let { page = 1, pageSize = 5 } = ctx.query
+  let { page = 1, pageSize = 5, categories } = ctx.query
   pageSize = +pageSize
   page--
   const total = await Article.find().then(data => data.length)
 
   const artList = await Article
-    .find()
+    .find((categories && {categories}) || {})
     .sort("-created")
     .skip(pageSize * page)
     .limit(pageSize)
@@ -82,7 +81,7 @@ exports.details = async ctx => {
 
   const article = await Article
     .findById(_id)
-    .populate("author", "username")
+    .populate("author", "username avatar")
     .then(data => data)
 
   const commentsList = await Comment
@@ -95,47 +94,80 @@ exports.details = async ctx => {
     .catch(err => {
       console.log(err)
     })
+  
+  const likeData = await Like.find({ article: _id, from: ctx.session.uid }).then(data => data)
 
   ctx.body = {
     article,
     commentsList,
+    isLike: likeData.length ? true : false
   }
 }
 
+// 喜欢文章
 exports.like = async ctx => {
   let message = {
     status: 403,
-    message: "登录才能发表"
-  }
-
-  if (ctx.session.isNew) {
-    return  ctx.body = message
+    message: "登录才能喜欢"
   }
   // 更新点赞数据
-  const { articleId } = ctx.request.body
-
-  Article.updateOne({
-    _id: articleId
-    },{
-      $inc: {
-        likeNum: 1
+  const { articleId, isLike } = ctx.request.body
+  // 如果还没有喜欢(亮时)
+  if(!isLike) {
+    const _like = new Like({article: articleId, from: ctx.session.uid})
+    await _like.save().then(data => {
+      message = {
+        status: 200,
+        message: "喜欢成功"
       }
-    }, err => {
-      if (err)  {
-        console.log(err)
+
+      Article.updateOne({
+        _id: data.article
+      }, {
+        $inc: {
+          likeNum: 1
+        }
+      }, err => {
+        if (err) {
+          message = {
+            status: 403,
+            message: err
+          }
+        }
+      })
+
+      User.updateOne({
+        _id: data.from
+      }, {
+        $inc: {
+          likeNum: 1
+        }
+      }, err => {
+        if (err) {
+          message = {
+            status: 403,
+            message: err
+          }
+        }
+      })
+    })
+  // 放弃喜欢(灰时)
+  } else {
+    message = {
+      status: 200,
+      message: "放弃喜欢"
+    }
+    await Like.findOne({ from: ctx.session.uid })
+      .then(data => data.remove())
+      .catch(err => {
         message = {
           status: 403,
           message: err
         }
-      }
-      ctx.body = message
-    })
-    ctx.body = {
-      status: 200,
-      message: '喜欢成功~'
-    }
+      })
+  }
+  ctx.body = message
 }
-
 // admin 文章列表
 exports.artlist = async ctx => {
   const uid = ctx.session.uid;
@@ -149,7 +181,6 @@ exports.artlist = async ctx => {
     data
   }
 }
-
 // 删除对应 id 的文章
 exports.del = async ctx => {
   const _id = ctx.params.id

@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Icon, Avatar } from 'antd'
-
 import './index.less'
 import logo from '../../../assets/logo.jpg'
-import { encode } from 'punycode';
+
 
 class SliderRight extends Component {
   constructor() {
@@ -22,13 +21,36 @@ class SliderRight extends Component {
       ],
       categoriesList: [
         {
-          name: '前端',          
+          name: '前端',
+          linkname: 'frontend'        
         },
         {
-          name: '后台'
+          name: '后台',
+          linkname: 'backend'
         },
         {
-          name: '数据库'
+          name: '数据库',
+          linkname: 'sql',
+        },
+        {
+          name: 'webpack',
+          linkname: 'webpack'
+        },
+        {
+          name: 'koa2',
+          linkname: 'koa2'
+        },
+        {
+          name: 'react',
+          linkname: 'react'
+        },
+        {
+          name: 'vue',
+          linkname: 'vue'
+        },
+        {
+          name: '数据结构与算法',
+          linkname: 'Algorithm'
         }
       ],
     }
@@ -56,7 +78,7 @@ class SliderRight extends Component {
     ))
     
     const categoriesList = this.state.categoriesList.map((item, i) => (
-      <a className='item' key={item.name} href={`/categories/${encode(item.name)}`}>
+      <a className='item' key={item.name} href={`/categories/${item.linkname}}`}>
       	<span>{item.name}</span>
       </a>
     ))

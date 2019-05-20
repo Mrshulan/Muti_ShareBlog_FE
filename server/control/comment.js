@@ -80,7 +80,7 @@ exports.del = async ctx => {
   }
   // 不能绕过remove方法使用deleteOne(勾不住钩子)
   await Comment.findById(commentId)
-    .then(data => data.remove())
+    .then(data => data.remove() )
     .catch(err => {
       res = {
         status: 403,

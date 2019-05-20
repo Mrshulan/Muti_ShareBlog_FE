@@ -13,8 +13,18 @@ const UserSchema = new Schema({
     type: String,
     default: "/avatar/default.jpg"
   },
-  articleNum: Number,
-  commentNum: Number
+  articleNum: {
+    type: Number,
+    default: 0
+  },
+  commentNum: {
+    type: Number,
+    default: 0
+  },
+  likeNum: {
+    type: Number,
+    default: 0
+  },
 }, {versionKey: false})
 
 // 删除用户的钩子

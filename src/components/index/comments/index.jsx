@@ -9,7 +9,7 @@ import CommentsList from './commentsList'
 import './index.less'
 import { Comment, Avatar, Form, Button, Divider, Input, Icon, Menu, Dropdown, message } from 'antd'
 import axios from '../../../utils/axios'
-
+const isPro = process.env.NODE_ENV === 'production'
 const { TextArea } = Input
 
 const Editor = ({ onChange, onSubmit, submitting, value }) => (
@@ -119,7 +119,7 @@ class ArticleComments extends Component {
         <Comment 
           avatar={(
             <Avatar
-              src={"http://mrshulan.xin" + avatar}
+              src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + avatar}
               alt={username}
             />
           )}

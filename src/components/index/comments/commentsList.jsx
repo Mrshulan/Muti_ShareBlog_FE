@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Comment, Avatar, Tooltip } from 'antd'
 import { translateMarkdown, timestampToTime } from '../../../utils/utils'
+const isPro = process.env.NODE_ENV === 'production'
 
 const CommentItem = (({ item }) => {
   const { from, created } = item
@@ -9,7 +10,7 @@ const CommentItem = (({ item }) => {
       author={from.username}
       avatar={(
         <Avatar
-          src={'http://mrshulan.xin' + from.avatar}
+          src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + from.avatar}
           alt={from.username}
         />
       )}

@@ -2,18 +2,18 @@ import React, { Component } from 'react'
 import { Icon, Avatar, message, Button } from 'antd';
 
 import './index.less'
-import logo from '../../../assets/logo.jpg'
 import LoadingCom from '../load/loading';
 import { translateMarkdown, timestampToTime } from '../../../utils/utils';
 import axios from '../../../utils/axios'
-import ArticleComments from '../comments';
+import ArticleComments from '../comments'
+const isPro = process.env.NODE_ENV === 'production'
 
 class ArticleDetail extends Component {
   constructor() {
     super(...arguments)
     this.state = {
       isArticleLoaded: false,
-      likeStatus: false,
+      isLike: false,
       title: '',
       content: '',
       author: '',
@@ -30,15 +30,17 @@ class ArticleDetail extends Component {
   }
 
   fetchData = (id) => {
-
     axios.get('/article/' + id).then(res => {
-      const { article, commentsList } = res
+      const { article, commentsList, isLike } = res
       const content = translateMarkdown(article.content)
       const { title, author,created, categories, likeNum } = article
+
       this.setState({
         isArticleLoaded: true,
+        isLike,
         title,
         author: author.username,
+        authorAvatar: author.avatar,
         content,
         categories,
         likesCount: likeNum,
@@ -58,15 +60,24 @@ class ArticleDetail extends Component {
 
   likeArticle = () => {
     axios.post('/article/like', {
-      articleId: this.props.match.params.id
+      articleId: this.props.match.params.id,
+      isLike: this.state.isLike
     }).then(res => {
        if(res.status === 200) {
          message.success(res.message)
+         if(res.message === '喜欢成功') {
+            this.setState({
+              isLike: true,
+              likesCount: this.state.likesCount + 1
+            })
+          } else if(res.message === '放弃喜欢') {
+            this.setState({
+              isLike: false,
+              likesCount: this.state.likesCount - 1
+            })
+         }
        }
-       this.setState({
-        likeStatus: true,
-        likesCount: this.state.likesCount + 1
-       })
+       
     })
   } 
 
@@ -77,7 +88,7 @@ class ArticleDetail extends Component {
   }
 
   render() {
-    const { isArticleLoaded, title, content ,author, categories, createdAt, commentsList, likeStatus, likesCount} = this.state
+    const { isArticleLoaded, title, content ,author, authorAvatar, categories, createdAt, commentsList, isLike, likesCount} = this.state
     const list = categories.map((v) => (
 			<span key={v} className="tag">
 				{v}
@@ -90,7 +101,11 @@ class ArticleDetail extends Component {
           <div className="title">{title}</div>
           <div className="author">
             <a href="/" className="avatar">
-              <Avatar className="auth-logo" src={logo} size={50} icon="user" />
+              <Avatar 
+                className="auth-logo"
+                src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + authorAvatar}
+                size={50}
+                icon="user" />
             </a>
             <div className="info">
               <span className="name">
@@ -123,10 +138,9 @@ class ArticleDetail extends Component {
 						type="danger"
 						size="large"
             icon="heart"
-            disabled={likeStatus}
 						onClick={this.likeArticle}
 					>
-						给 ta 点鼓励
+						{isLike ? '取消喜欢' : '给 ta 点鼓励'}
 					</Button>
 				</div>
 

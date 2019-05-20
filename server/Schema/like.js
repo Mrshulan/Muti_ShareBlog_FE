@@ -1,8 +1,7 @@
 const { Schema } = require("./config")
 const ObjectId = Schema.Types.ObjectId
 
-const CommentSchema = new Schema({
-  content: String,
+const LikeSchema = new Schema({
   from: {
     type: ObjectId,
     ref: "users"
@@ -13,19 +12,17 @@ const CommentSchema = new Schema({
   }
 },{
   versionKey: false,
-  timestamps: {
-    createdAt: "created"
-  }
+  timestamps: true
 })
 
 // 设置remove后置钩子
-CommentSchema.post("remove", async (doc) => {
+LikeSchema.post("remove",  async (doc) => {
   const Article = require("../Models/article")
   const User = require("../Models/user")
   const { from, article } = doc;
 
-  await Article.updateOne({_id: article}, {$inc: {commentNum: -1}}).exec()
-  await User.updateOne({_id: from}, {$inc: {commentNum: -1}}).exec()
+  await Article.updateOne({_id: article}, {$inc: {likeNum: -1}}).exec()
+  await User.updateOne({_id: from}, {$inc: {likeNum: -1}}).exec()
 })
 
-module.exports = CommentSchema
+module.exports = LikeSchema

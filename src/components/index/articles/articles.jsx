@@ -3,11 +3,9 @@ import { Icon, Tag, Divider, Pagination, Empty,} from 'antd';
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import LoadingCom from '../load/loading'
 import LoadedCom from '../load/loadend'
-
 import './index.less'
 import axios from '../../../utils/axios'
 import { translateMarkdown, timestampToTime } from '../../../utils/utils'
-
 const isPro = process.env.NODE_ENV === 'production'
 
 const NoData = ({ keyword }) => (
@@ -31,11 +29,19 @@ class Articles extends Component {
   }
 
   componentDidMount() {
-    this.fetchList({page: 1, keyword: 'script'})
+    let isHot = this.props.match.path === '/hot'
+    this.fetchList({isHot, page: 1, categories: this.props.match.params.id})
   }
 
-  fetchList = ({ page, keyword }) => {
-    axios.get('/articlesList', { params: { page, pageSize: 5 } })
+  componentDidUpdate(preProps) {
+    if(preProps.match.params.id !== this.props.match.params.id) {
+      this.fetchList({page: 1, categories: this.props.match.params.id})
+    }
+  }
+
+  fetchList = ({ isHot, page, categories }) => {
+    if(!isHot) {
+      axios.get('/articlesList', { params: { page, pageSize: 5, categories: categories ? categories : ''} })
       .then(res => {
         this.setState({
           isArticlesLoaded: true,
@@ -43,6 +49,16 @@ class Articles extends Component {
           total: res.total || 0
        })
       })  
+    } else {
+      axios.get('/hot', { params: { page, pageSize: 5 } })
+      .then(res => {
+        this.setState({
+          isArticlesLoaded: true,
+          articlesList: res.artList || [], 
+          total: res.total || 0
+       })
+      }) 
+    } 
   }
 
   handleSearch = () => {  

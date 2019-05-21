@@ -13,7 +13,40 @@ import axios from '../../../utils/axios'
 class Edit extends Component {
   state = {
     title: '',
-    categoryList:  ["前端", "后台",'数据库', "产品", '运营'],
+    categoryList:  [
+      {
+        name: '前端',
+        linkname: 'frontend'        
+      },
+      {
+        name: '后台',
+        linkname: 'backend'
+      },
+      {
+        name: '数据库',
+        linkname: 'sql',
+      },
+      {
+        name: 'webpack',
+        linkname: 'webpack'
+      },
+      {
+        name: 'koa2',
+        linkname: 'koa2'
+      },
+      {
+        name: 'react',
+        linkname: 'react'
+      },
+      {
+        name: 'vue',
+        linkname: 'vue'
+      },
+      {
+        name: '数据结构与算法',
+        linkname: 'Algorithm'
+      }
+    ]
   }
 
   componentDidMount() {

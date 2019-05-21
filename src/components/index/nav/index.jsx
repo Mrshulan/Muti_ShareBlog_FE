@@ -55,7 +55,7 @@ class Nav extends Component {
     let key = '1'
     if(pathName === '/') {
       key = "1"
-    } else if (pathName === '/hottest') {
+    } else if (pathName === '/hot') {
       key = '2'
     } else if (pathName === '/categories') {
       key = '3'
@@ -116,7 +116,7 @@ class Nav extends Component {
                   </Link>
                 </Menu.Item>
                 <Menu.Item key="2">
-                  <Link to="/hottest">
+                  <Link to="/hot">
                     <Icon type="home" theme="outlined" /> 热门
                   </Link>
                 </Menu.Item>

@@ -168,6 +168,23 @@ exports.like = async ctx => {
   }
   ctx.body = message
 }
+// 喜欢列表
+exports.getLikeList = async ctx => {
+  const uid = ctx.session.uid;
+  const data = await Like.find({
+    from: uid
+  }).populate({
+    path: "article",
+    select: "_id title likeNum"
+  })
+  .then(data => data)
+
+  ctx.body = {
+    status: 200,
+    count: data.length,
+    data
+  }
+}
 // admin 文章列表
 exports.artlist = async ctx => {
   const uid = ctx.session.uid;

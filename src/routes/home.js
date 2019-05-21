@@ -1,8 +1,9 @@
 import Layout from '../components/index/layout'
 
-import Home from '../components/index/articles/articles.jsx'
+import Articles from '../components/index/articles/articles.jsx'
 import Article from '../components/index/article/article.jsx'
 import Editor from '../components/index/editor/index.jsx'
+import Categories from '../components/index/categories/index.jsx'
 import NotFound from '../components/404/index'
 
 export default {
@@ -10,9 +11,12 @@ export default {
   name: 'home',
   component: Layout,
   childRoutes: [
-    {path: '', component: Home},
+    {path: '', component: Articles},
     {path: 'article/:id', component: Article},
     {path: 'editor', component: Editor},
+    {path: 'categories/:id', component: Articles},
+    {path: 'categories', component: Categories},
+    {path: 'hot', component: Articles},
     {path: '*', component: NotFound}
   ]
 }

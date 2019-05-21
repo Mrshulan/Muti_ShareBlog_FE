@@ -3,7 +3,8 @@ const Router = require('koa-router')
 const user = require('../control/user')
 const article = require('../control/article')
 const comment = require("../control/comment")
-const upload = require("../util/upload");
+const action = require("../control/action")
+const upload = require("../util/upload")
 
 
 const router = new Router()
@@ -27,6 +28,8 @@ router.put("/article", user.keepLog, article.add)
 // 文章获取列表
 router.get('/articlesList', article.getArticleList)
 
+// 点赞文章列表
+router.get('/likelist', user.keepLog, article.getLikeList)
 // 文章点赞
 router.post('/article/like', user.keepLog, article.like)
 // 文章详情页 路由
@@ -60,6 +63,11 @@ router.del("/comment/:id", user.keepLog, comment.del)
 router.del("/article/:id", user.keepLog, article.del)
 // 删除用户
 router.del('/user/:id', user.keepLog, user.del)
+
+// 获取分类数据
+router.get('/categories', action.getCategories)
+// 获取热门
+router.get('/hot', action.getHotArticles)
 
 
 module.exports = router

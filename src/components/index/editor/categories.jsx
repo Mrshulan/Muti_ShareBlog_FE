@@ -7,7 +7,7 @@ class SelectCates extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectList: [this.props.categoryList[0]]
+      selectList: [this.props.categoryList[0].linkname]
     }
   }
 
@@ -27,16 +27,17 @@ class SelectCates extends Component {
 
   render() {
     const { selectList } = this.state
+
     return (
       <div className="editItem">
         <span className="label">分类:</span>
         {this.props.categoryList.map((item) => (
             <CheckableTag
-              key={item}
-              checked={selectList.includes(item)}
-              onChange={checked => this.handleSelect(item, checked)}
+              key={item.linkname}
+              checked={selectList.includes(item.linkname)}
+              onChange={checked => this.handleSelect(item.linkname, checked)}
             >
-              {item}
+              {item.name}
             </CheckableTag>
           ))
         }

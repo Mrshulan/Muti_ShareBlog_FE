@@ -25,7 +25,7 @@ const CONFIG = {
   store: new SessionStore()
 }
 
-// 被踢出后中间件
+// 被踢出后中间件(可用来错误上报)
 app.use(async (ctx, next) => {
   try {
     await next()

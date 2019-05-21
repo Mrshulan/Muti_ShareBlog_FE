@@ -13,6 +13,17 @@ const UserSchema = new Schema({
     type: String,
     default: "/avatar/default.jpg"
   },
+  tellphone: {
+    type: Number,
+  },
+  info: {
+    type: Object,
+    default: {
+      signature: '这个家伙很懒,什么也没有留下',
+      email: 'adengminjie@163.com',
+      weibo: 'https://weibo.com/575555860'
+    }
+  },
   articleNum: {
     type: Number,
     default: 0

@@ -37,7 +37,7 @@ class AdminLayout extends Component {
               }}>
               {this.props.children}
             </Content>
-            <Footer style={{ textAlign: 'center' }}>React-Admin ©2019</Footer>
+            <Footer style={{ textAlign: 'center' }}>多人共享博客-用户页 ©2019</Footer>
           </Layout>
         </Layout>
       </div>

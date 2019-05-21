@@ -50,7 +50,7 @@ class AuthModal extends Component {
         }
         
         if(this.passwordConfirm.state.value === this.state.password) {     
-          this.props.register({ username, password }).then(res => {
+          this.props.register({ username, password, tellphone}).then(res => {
             if (res.status === 200) this.props.closeAuthModal('register')
           })
         } else {

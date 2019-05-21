@@ -24,7 +24,7 @@ class CommentsCol extends Component {
   getColumns = () => {
     return [
       {
-        title: '文章',
+        title: '评论文章',
         dataIndex: 'article',
         render: (text, record) => {
           return (

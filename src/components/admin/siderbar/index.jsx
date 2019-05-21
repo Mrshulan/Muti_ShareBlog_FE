@@ -32,9 +32,9 @@ class Siderbar extends Component {
                 <span>{item.name}</span>
               </span>
             }
-            key={newContextPath}>
+            key={newContextPath}
           >
-            {item.childRoutes.map(r => renderRoute(r, newContextPath))}
+           {item.childRoutes.map(r => renderRoute(r, newContextPath))}
           </SubMenu>
         )
       } else {
@@ -50,7 +50,6 @@ class Siderbar extends Component {
         )
       }
     }
-
     return data.childRoutes.map(d => renderRoute(d, '/user'))
   }
 

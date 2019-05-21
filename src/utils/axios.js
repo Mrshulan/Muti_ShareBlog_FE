@@ -11,10 +11,7 @@ let service = axios.create({
 // request拦截器 axios的一些配置
 service.interceptors.request.use(
 	config => {
-		// const token = getCookie('token')
-		// if(token) {
 		// 	config.headers.common['Authorization'] = 'mrshulan' + token
-		// }
 		return config
 	},
 	error => {

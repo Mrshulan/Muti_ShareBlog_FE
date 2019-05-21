@@ -157,7 +157,7 @@ exports.like = async ctx => {
       status: 200,
       message: "放弃喜欢"
     }
-    await Like.findOne({ from: ctx.session.uid })
+    await Like.findOne({ article:articleId, from: ctx.session.uid })
       .then(data => data.remove())
       .catch(err => {
         message = {

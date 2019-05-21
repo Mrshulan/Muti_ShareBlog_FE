@@ -5,19 +5,22 @@ import md5 from 'md5'
 import Storage from '../../utils/storage'
 
 const cache = new Storage()
-const { userId, username, role, avatar} = cache.get('info') || {}
+const { userId, username, role, avatar, tellphone, info } = cache.get('info') || {}
 let initialState = {
   userId: userId || null,
   username: username || '',
   role: role || '1',
-  avatar: avatar || ''
+  avatar: avatar || '',
+  tellphone: tellphone || 18473871766,
+  info: info || {}
 }
 
 export const types = {
   LOGIN: 'AUTH/LOGIN',
   REGISTER: 'AUTH/REGiSTER',
   LOGOUT: 'AUTH/LOGOUT',
-  UPDATEAVATAR: 'AUTH/UPDATEAVATAR'
+  UPDATEAVATAR: 'AUTH/UPDATEAVATAR',
+  UPDATEINFO: 'AUTH/UPDATEINFO'
 }
 
 
@@ -29,8 +32,8 @@ export const actions = {
         dispatch(appActions.finishRequest())
 
         if(res.status === 200) {
-          const { userId, username, role, avatar } = res
-          const data = { userId, username, role, avatar }
+          const { userId, username, role, avatar, tellphone, info} = res
+          const data = { userId, username, role, avatar,  tellphone, info }
           cache.set('info', data, 86400000)
           message.success(res.message)
           dispatch(actions.setLoginInfo(data))
@@ -42,10 +45,10 @@ export const actions = {
       })
     }
   },
-  register: ({username, password}) => {
+  register: ({username, password, tellphone}) => {
     return dispatch => {
       dispatch(appActions.startRequest())
-      return axios.post('/register', { username, password: md5(password + username)}).then(res => {
+      return axios.post('/register', { username, password: md5(password + username), tellphone}).then(res => {
         dispatch(appActions.finishRequest())       
         if (res.status === 200) {     
           message.success(res.message)
@@ -76,6 +79,15 @@ export const actions = {
       }
     }
   },
+  updateInfo: (data) => {
+    cache.set("info", { ...cache.get('info'), info: data })
+    return {
+      type: types.UPDATEINFO,
+      payload: {
+        data
+      }
+    }
+  },
   setLoginInfo: (payload) => ({
     type: types.LOGIN,
     payload
@@ -86,12 +98,14 @@ const reducer = (state = initialState, action) => {
   const { type, payload } = action
   switch(type) {
     case types.LOGIN:
-      const { userId, username, avatar, role } = payload
-      return { ...state, userId, username, avatar, role }
-      case types.LOGOUT:
-      return { userId: null, username: '',role: 0, avatar: ''}
+      const { userId, username, avatar, role, tellphone, info} = payload
+      return { ...state, userId, username, avatar, role, tellphone, info}
+    case types.LOGOUT:
+      return { userId: null, username: '',role: 0, avatar: '', info: {}, tellphone: 18473871766}
     case types.UPDATEAVATAR:
       return {...state, avatar: action.payload.path }
+    case types.UPDATEINFO:
+      return {...state, info: action.payload.data }
     default:
       return state
   }

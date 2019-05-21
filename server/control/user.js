@@ -6,7 +6,7 @@ const rand = require('csprng')
 // 用户注册
 exports.reg = async ctx => {
   // ctx.request.body 接受注册时 post发过来的数据
-  const { username, password } = ctx.request.body
+  const { username, password, tellphone} = ctx.request.body
   let response
   // 给个promise承诺 
   await new Promise((resolve, reject) => {
@@ -25,6 +25,7 @@ exports.reg = async ctx => {
         const _user = new User({
           username,
           password: encrypt({password, vkey}),
+          tellphone,
           vkey,
           commentNum: 0,
           articleNum: 0
@@ -84,12 +85,12 @@ exports.login = async ctx => {
           uid: data[0]._id,
           role: data[0].role
         }
-        response = { status: 200, message: '你已经登录成功', username, userId: data[0]._id, avatar: data[0].avatar, role: data[0].role }
+        response = { status: 200, message: '你已经登录成功', username, userId: data[0]._id, avatar: data[0].avatar, role: data[0].role, tellphone: data[0].tellphone, info: data[0].info}
       }
       ctx.body = response
     })
     .catch(async err => {
-      ctx.body = { status: 400, message: err }
+      ctx.body = { status: 403, message: err }
     })
 }
 
@@ -142,6 +143,22 @@ exports.upload = async ctx => {
   ctx.body = data
 }
 
+// 修改用户信息
+exports.userinfo = async ctx => {
+  let response = {
+    status: 200,
+    message: '修改成功'
+  }
+
+  const data = ctx.request.body
+  await User.findByIdAndUpdate(ctx.session.uid, { $set: {info: data} }).catch(err => {
+    response = {
+      status: 403,
+      message: '修改失败'
+    }
+  })
+  ctx.body = response
+}
 
 // admin 管理员查看用户
 exports.usrlist = async ctx => {

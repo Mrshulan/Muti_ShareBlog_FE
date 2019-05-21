@@ -15,7 +15,6 @@
     "koa": "^2.7.0",
     "koa-body": "^4.0.8",
     "koa-convert": "^1.2.0",
-    "koa-jwt": "^3.5.1",
     "koa-logger": "^3.2.0",
     "koa-multer": "^1.0.2",
     "koa-router": "^7.4.0",

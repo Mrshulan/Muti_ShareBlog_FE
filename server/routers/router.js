@@ -50,12 +50,15 @@ router.post("/upload", async (ctx, next) => {
   await next()
 }, upload.single("avatar"), user.upload)
 
+
 // 获取用户的所有评论
 router.get("/user/comments", user.keepLog, comment.comlist)
 // 获取用户的所有文章
 router.get("/user/articles", user.keepLog, article.artlist)
 // 获取用户
 router.get("/user/users", user.keepLog, user.usrlist)
+
+router.post('/user/userinfo', user.keepLog, user.userinfo)
 
 // 删除用户的评论
 router.del("/comment/:id", user.keepLog, comment.del)

@@ -12,6 +12,21 @@ class ArticleCol extends Component {
   componentDidMount() {
     this.fetchList()
   }
+
+  categoriesChange = (item) => {
+    switch (item) {
+      case "frontend" : 
+        return '前端'
+      case "backend" : 
+        return '后端'
+      case "sql" : 
+        return '数据库'
+      case "Algorithm" : 
+        return '数据结构与算法'
+      default: 
+        return item
+    }
+  }
   
   fetchList = () => {
     axios.get('/user/articles').then(res => {
@@ -34,7 +49,7 @@ class ArticleCol extends Component {
         render: (text, record) => {
           return text.map(v => (
             <Tag color={'#2db7f5'} key={v}>
-              {v}
+              {this.categoriesChange(v)}
             </Tag>
           ))
         }

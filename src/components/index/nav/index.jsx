@@ -41,6 +41,13 @@ class Nav extends Component {
     })
   }
 
+  handleEditStatus = ()=> {
+    // 如果路由不是 /editor 就切换状态 (due to props 传递无奈...)
+    if(this.props.pathname !== '/editor') {
+      this.props.editStatus()  
+    }
+  }
+
   handleSearch = e => {
     const keyword = this.state.keyword
     if (keyword) {
@@ -74,7 +81,7 @@ class Nav extends Component {
   }
 
   render () {
-    const { username } = this.props
+    const { username, avatar, isEdit } = this.props
     const { keyword } = this.state
 
     return (
@@ -152,8 +159,8 @@ class Nav extends Component {
                   type="primary"
                   style={{ marginRight: 20 }}
                   >
-                  <Link to="/editor">
-                    发表文章
+                  <Link to="/editor" onClick={this.handleEditStatus}>
+                    {isEdit ? "编辑下方分享哦" : '发表文章'}
                   </Link>
                   </Button>
                   <Menu
@@ -163,7 +170,7 @@ class Nav extends Component {
                     <SubMenu
                       title={
                         <span className="submunu-title-wrap">
-                          <Avatar src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + this.props.avatar} /> { username }
+                          <Avatar src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + avatar} /> { username }
                         </span>
                       }
                     >
@@ -204,7 +211,8 @@ class Nav extends Component {
 
 const mapStateToProps = (state) => ({
   username: state.auth.username,
-  avatar: state.auth.avatar
+  avatar: state.auth.avatar,
+  isEdit: state.ui.isEdit
 })
 
 const mapDispatchToProps = dispatch => {

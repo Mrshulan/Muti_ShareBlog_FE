@@ -32,6 +32,7 @@ class ArticleDetail extends Component {
   fetchData = (id) => {
     axios.get('/article/' + id).then(res => {
       const { article, commentsList, isLike } = res
+      this.contentwords = this.wordCount(article.content)
       const content = translateMarkdown(article.content)
       const { title, author,created, categories, likeNum } = article
 
@@ -86,6 +87,21 @@ class ArticleDetail extends Component {
       commentsList: [item, ...this.state.commentsList]
     })
   }
+  // simplemde源码里的用来统计字数的
+  wordCount(data) {
+    const pattern = /[a-zA-Z0-9_\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
+    const m = data.match(pattern);
+    let count = 0;
+    if (m === null) return count;
+    for (let i = 0; i < m.length; i++) {
+      if (m[i].charCodeAt(0) >= 0x4E00) {
+        count += m[i].length;
+      } else {
+        count += 1;
+      }
+    }
+    return count;
+  }
 
   render() {
     const { isArticleLoaded, title, content ,author, authorAvatar, categories, createdAt, commentsList, isLike, likesCount} = this.state
@@ -116,7 +132,7 @@ class ArticleDetail extends Component {
                 <span className="publish-time">
                   发表于: {timestampToTime(createdAt, true)}
                 </span>
-                <span className="wordage">字数 {content.length}</span>
+                <span className="wordage">字数 {this.contentwords}</span>
 								<span className="likes-count">点赞 {likesCount}</span>
 								<span className="comments-count">评论 {commentsList.length}</span>
               </div>

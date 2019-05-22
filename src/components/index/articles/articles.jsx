@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Icon, Tag, Divider, Pagination, Empty,} from 'antd';
+import { Icon, Tag, Divider, Pagination, Empty,} from 'antd'
+import { Link } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import LoadingCom from '../load/loading'
 import LoadedCom from '../load/loadend'
@@ -8,9 +9,9 @@ import axios from '../../../utils/axios'
 import { translateMarkdown, timestampToTime } from '../../../utils/utils'
 const isPro = process.env.NODE_ENV === 'production'
 
-const NoData = ({ keyword }) => (
+const NoData = ({ keyword, categories}) => (
   <React.Fragment>
-    没有关于<span className="keyword">{keyword ? keyword : "该技术"}</span>的文章！ 
+    没有关于<span className="keyword">{keyword ? keyword : categories ? categories : "该技术"}</span>的文章！ 
     <br/>
     期待你的创作~
   </React.Fragment>
@@ -78,12 +79,6 @@ class Articles extends Component {
       }) 
     } 
   }
-
-  handleSearch = () => {  
-    this.setState({
-      isArticlesLoaded: false,
-    })
-  }
   
   jumpTo = (id) => {
     this.props.history.push('/article/' + id)
@@ -97,6 +92,21 @@ class Articles extends Component {
     document.body.scrollTop = document.documentElement.scrollTop = 0;
   }
 
+  categoriesChange = (item) => {
+    switch (item) {
+      case "frontend" : 
+        return '前端'
+      case "backend" : 
+        return '后端'
+      case "sql" : 
+        return '数据库'
+      case "Algorithm" : 
+        return '数据结构与算法'
+      default: 
+        return item
+    }
+  }
+
   translateMarkdownToDesc = (content) => {
     let index = content.indexOf('<!--more-->')
     if(index > -1) {
@@ -108,48 +118,52 @@ class Articles extends Component {
 
   render() {
     const { articlesList, total, isArticlesLoaded, page } = this.state
-    const { keyword } = this.props
-    const list = articlesList && articlesList.map((item) => (
-      <CSSTransition
-        in={isArticlesLoaded}
-        key={item._id}
-        classNames="article-item"
-        timeout={500}
-      >
-        <li key={item._id} className='article-item have-img'>
-          <a className="wrap-img" href={`/article/${item._id}`} >
-						<img className="img-blur-done" data-src={item.author.avatar} src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + item.author.avatar} alt="摘要图片" />
-					</a>
-          <div className="content">
-            <Divider orientation="left" onClick={() => this.jumpTo(item._id)}> 
-              <span className="title">{item.title}</span>
-              <Icon type="folder" style={{ margin: '0px 7px' }} />
-              {
-                item.categories.map((v) => (
-                  <Tag color={'#2db7f5'} key={v}>{v}</Tag>
-                ))
-              }
-            </Divider>
+    const { keyword, match } = this.props
+    const list = articlesList && articlesList.map((item) => {
+      return (
+        <CSSTransition
+          in={isArticlesLoaded}
+          key={item._id}
+          classNames="article-item"
+          timeout={500}
+        >
+          <li key={item._id} className='article-item have-img'>
+            <a className="wrap-img" href={`/article/${item._id}`} >
+              <img className="img-blur-done" data-src={item.author.avatar} src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + item.author.avatar} alt="摘要图片" />
+            </a>
+            <div className="content">
+              <Divider orientation="left" onClick={() => this.jumpTo(item._id)}> 
+                <span className="title">{item.title}</span>
+                <Icon type="folder" style={{ margin: '0px 7px' }} />
+                {
+                  item.categories.map((v) => {
+                    return (
+                      <Tag color={'#2db7f5'} key={v}>{this.categoriesChange(v)}</Tag>
+                    )
+                  })
+                }
+              </Divider>
 
-            <div
-              onClick={() => this.jumpTo(item._id)}
-              className="article-detail description abstract"
-              dangerouslySetInnerHTML={{ __html: this.translateMarkdownToDesc(item.content) }}
-            />
+              <div
+                onClick={() => this.jumpTo(item._id)}
+                className="article-detail description abstract"
+                dangerouslySetInnerHTML={{ __html: this.translateMarkdownToDesc(item.content) }}
+              />
 
-            <div className="meta">
-							<a href={`/article/${item._id}`}>
-								<Icon type="like" theme="outlined" /> {item.likeNum}
-							</a>&nbsp;
-							<a href={`/article/${item._id}`}>
-								<Icon type="message" theme="outlined" /> {item.commentNum}
-							</a>&nbsp;
-              <span className="time">{timestampToTime(item.created)}</span>
+              <div className="meta">
+                <Link to={`/article/${item._id}`}>
+                  <Icon type="like" theme="outlined" /> {item.likeNum}
+                </Link>&nbsp;
+                <Link to={`/article/${item._id}`}>
+                  <Icon type="message" theme="outlined" /> {item.commentNum}
+                </Link>&nbsp;
+                <span className="time">{timestampToTime(item.created)}</span>
+              </div>
             </div>
-          </div>
-        </li>
-      </CSSTransition>
-    ))
+          </li>
+        </CSSTransition>
+      )
+    })
 
     return (
       <div className="left" ref={(left) => { this.left = left}}>
@@ -169,7 +183,7 @@ class Articles extends Component {
             </div>
           ) : (
             <div className="no-data">
-              <Empty description={<NoData keyword={keyword} />} />
+              <Empty description={<NoData keyword={keyword} categories={match && this.categoriesChange(match.params.id)}/>} />
             </div>
           )
         }

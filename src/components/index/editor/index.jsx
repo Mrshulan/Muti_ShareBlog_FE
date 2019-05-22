@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
+import { Button, Input, Modal, BackTop, message } from 'antd'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { actions as uiActions} from '../../../redux/modules/ui'
 
-import { Button, Input, Modal, BackTop } from 'antd'
 import SelectCate from './categories'
+import './index.less'
+import { translateMarkdown } from '../../../utils/utils'
+import axios from '../../../utils/axios'
 
 import SimpleMDE from "simplemde"
 import 'simplemde/dist/simplemde.min.css'
 
-import './index.less'
-import { translateMarkdown } from '../../../utils/utils'
-import axios from '../../../utils/axios'
 
 class Edit extends Component {
   state = {
@@ -53,31 +56,41 @@ class Edit extends Component {
     this.smde = new SimpleMDE({
       element: document.getElementById('editor'),
       autofocus: true,
-      autosave: true,
-      previewRender: translateMarkdown
+      autosave: {
+        enabled: true,
+        uniqueId: "MyEidtID",
+        delay: 10000,
+      },
+      previewRender: translateMarkdown    
     })
+  }
+
+  componentWillUnmount() {
+    this.props.editStatus()
   }
 
   handleSubmit = () => {
     const categories = this.$categoryRef.getResult()
-    let params = {
-      title: this.state.title,
-      categories,
-      content: this.smde.value(),
-    }
-
-    axios.put('/article', params).then(res => {
-      if(res.status === 200) {
-        Modal.confirm({
-          title: res.message,
-          onOk: () => {
-            this.props.history.push('/')
-          }
-        })
+    if(this.state.title && this.smde.value()) {
+      let params = {
+        title: this.state.title,
+        categories,
+        content: this.smde.value(),
       }
-    })
 
-    
+      axios.put('/article', params).then(res => {
+        if(res.status === 200) {
+          Modal.confirm({
+            title: res.message,
+            onOk: () => {
+              this.props.history.push('/')
+            }
+          })
+        }
+      }) 
+    } else {
+      message.error('标题与内容不能为空')
+    }
   }
 
   handleChange = (e) => {
@@ -106,7 +119,7 @@ class Edit extends Component {
         />
         <textarea id="editor" placeholder='请输入正文...'></textarea>
         <Button onClick={this.handleSubmit} type="primary">
-          创建
+          立即分享
         </Button>
         <BackTop />
       </div>
@@ -114,4 +127,14 @@ class Edit extends Component {
   }
 }
 
-export default Edit
+const mapStateToProps = (state) => ({
+  isEdit: state.ui.isEdit,
+})
+
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(uiActions, dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Edit)

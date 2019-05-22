@@ -10,7 +10,7 @@ const isPro = process.env.NODE_ENV === 'production'
 
 const NoData = ({ keyword }) => (
   <React.Fragment>
-    没有关于<span className="keyword">{keyword ? keyword : "技术"}</span>的文章！ 
+    没有关于<span className="keyword">{keyword ? keyword : "该技术"}</span>的文章！ 
     <br/>
     期待你的创作~
   </React.Fragment>
@@ -20,7 +20,6 @@ class Articles extends Component {
   constructor() {
     super(...arguments)
     this.state = {
-      keyword: '',
       isArticlesLoaded: false,
       articlesList: [],
       total: 5,
@@ -29,26 +28,45 @@ class Articles extends Component {
   }
 
   componentDidMount() {
-    let isHot = this.props.match.path === '/hot'
-    this.fetchList({isHot, page: 1, categories: this.props.match.params.id})
-  }
-
-  componentDidUpdate(preProps) {
-    if(preProps.match.params.id !== this.props.match.params.id) {
-      this.fetchList({page: 1, categories: this.props.match.params.id})
+    if(this.props.match) {
+      let isHot = this.props.match.path === '/hot'
+      this.fetchList({isHot, page: 1, categories: this.props.match.params.id })
+      // 如果不是走路由过来的而是走弹出层
+    } else if (this.props.keyword) {
+      this.fetchList({page: 1, keyword: this.props.keyword })
     }
   }
 
-  fetchList = ({ isHot, page, categories }) => {
+  componentDidUpdate(preProps) {
+    if((preProps.match && this.props.match) && preProps.match.params.id !== this.props.match.params.id) {
+      this.fetchList({page: 1, categories: this.props.match.params.id})
+    } else if (preProps.keyword !== this.props.keyword) {
+      this.fetchList({page: 1, keyword: this.props.keyword})
+    }
+  }
+
+  fetchList = ({ isHot, page, categories, keyword }) => {
     if(!isHot) {
-      axios.get('/articlesList', { params: { page, pageSize: 5, categories: categories ? categories : ''} })
+      let params = {
+        page,
+        pageSize: 5,
+      }
+
+      // 文章查询条件判断
+      if(categories) {
+        params = { ...params, categories }
+      } else if(keyword) {
+        params = { ...params, keyword }
+      }
+
+      axios.get('/articlesList', { params })
       .then(res => {
         this.setState({
           isArticlesLoaded: true,
           articlesList: res.artList || [], 
           total: res.total || 0
        })
-      })  
+      })
     } else {
       axios.get('/hot', { params: { page, pageSize: 5 } })
       .then(res => {
@@ -89,7 +107,8 @@ class Articles extends Component {
   }
 
   render() {
-    const { articlesList, total, isArticlesLoaded, page, keyword } = this.state
+    const { articlesList, total, isArticlesLoaded, page } = this.state
+    const { keyword } = this.props
     const list = articlesList && articlesList.map((item) => (
       <CSSTransition
         in={isArticlesLoaded}

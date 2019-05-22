@@ -52,13 +52,26 @@ exports.add = async ctx => {
 
 // 获取文章列表
 exports.getArticleList = async ctx => {
-  let { page = 1, pageSize = 5, categories } = ctx.query
+  let { page = 1, pageSize = 5, categories, keyword } = ctx.query
   pageSize = +pageSize
   page--
-  const total = await Article.find().then(data => data.length)
 
+  // 条件判断
+  let condition = {}
+  if(categories) {
+    condition = { categories }
+  } else if (keyword) {
+    condition = {
+      $or: [
+        { title: { $regex: keyword, $options: '$i' }},
+        { content: { $regex: keyword, $options: '$i' }}
+      ]
+    }
+  }
+
+  const total = await Article.find(condition).then(data => data.length)
   const artList = await Article
-    .find((categories && {categories}) || {})
+    .find(condition)
     .sort("-created")
     .skip(pageSize * page)
     .limit(pageSize)

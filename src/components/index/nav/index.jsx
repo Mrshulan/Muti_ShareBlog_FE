@@ -3,6 +3,7 @@ import { Link,withRouter } from 'react-router-dom'
 import { Layout, Icon, Menu, Row, Col, Input, Button, Avatar ,message} from 'antd';
 
 import AuthModal from '../authModal'
+import ArticlesModal from '../articlesModal'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { actions as authActions} from '../../../redux/modules/auth'
@@ -43,11 +44,9 @@ class Nav extends Component {
   handleSearch = e => {
     const keyword = this.state.keyword
     if (keyword) {
-      console.log("你将要搜索" + keyword)
-      message.error('该功能暂未开发')
-      this.setState({
-        keyword: ''
-      })
+      this.props.openArticlesModal()
+    } else {
+      message.error('输入你想要查询的文章')
     }
   }
   
@@ -76,6 +75,7 @@ class Nav extends Component {
 
   render () {
     const { username } = this.props
+    const { keyword } = this.state
 
     return (
       <div className="left">
@@ -139,7 +139,7 @@ class Nav extends Component {
                 value={this.state.keyword}
                 onChange={this.handleChange}
                 onPressEnter={this.handleSearch}
-                placeholder="搜索文章"
+                placeholder="搜索更新啦"
                 style={{width: 200}}
                 className='searchIpt'
               />
@@ -196,6 +196,7 @@ class Nav extends Component {
           </Row>
         </Header>        
         <AuthModal />
+        <ArticlesModal keyword={keyword}/>
       </div>
     )
   }

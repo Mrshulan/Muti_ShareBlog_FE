@@ -9,6 +9,7 @@ const { Content, Footer, Sider } = Layout
 const mapStateToProps = (state) => ({
   userInfo: state.auth
 })
+
 const Layouts = (props) => {
   let isShowSlider = true
   let pathName = props.location.pathname

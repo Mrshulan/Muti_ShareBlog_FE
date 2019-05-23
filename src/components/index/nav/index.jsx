@@ -96,6 +96,7 @@ class Nav extends Component {
             minWidth: '1200px',
             height: '66px',
             float: 'left',
+            paddingLeft: 'calc(100vw - 100%)',
             backgroundColor: 'white',
             borderBottom: '1px solid #eee'
           }}

@@ -23,7 +23,7 @@ class AuthModal extends Component {
   handleChange = (e) => {
 		this.setState({
 			[e.target.name]: e.target.value,
-		})
+    })
   }
 
   handleSubmit = () => {
@@ -45,13 +45,15 @@ class AuthModal extends Component {
       if(username && password && tellphone){
         if(!new RegExp(reg).test(tellphone)) {
           message.error('请检查手机号')
-          this.passwordConfirm.state.value = ''
           return
         }
         
         if(this.passwordConfirm.state.value === this.state.password) {     
           this.props.register({ username, password, tellphone}).then(res => {
-            if (res.status === 200) this.props.closeAuthModal('register')
+            if (res.status === 200) {
+              this.props.closeAuthModal('register')
+              this.passwordConfirm.state.value = ''
+            }
           })
         } else {
           message.error('两次密码不一致')
@@ -59,6 +61,7 @@ class AuthModal extends Component {
         }
       } else {
         message.error('请务必填写完整')
+        this.passwordConfirm.state.value = ''
       }
     }
 
@@ -101,6 +104,7 @@ class AuthModal extends Component {
             placeholder="请输入你的用户名"
             value={this.state.username}
             onChange={this.handleChange}
+            onPressEnter={this.handleSubmit}
           />
           <Input 
             style={{ marginBottom: 20 }}
@@ -110,6 +114,7 @@ class AuthModal extends Component {
             placeholder="请输入你的密码"
             value={this.state.password}
             onChange={this.handleChange}
+            onPressEnter={this.handleSubmit}
           />
           { type === '注册' ? (
             <React.Fragment>
@@ -120,6 +125,7 @@ class AuthModal extends Component {
                   name='passwordConfirm'
                   placeholder="再次输入你的密码"
                   ref={(node) => {this.passwordConfirm = node}}
+                  onPressEnter={this.handleSubmit}
                 />
                 <Input
                   style={{ marginBottom: 20 }}
@@ -128,6 +134,7 @@ class AuthModal extends Component {
                   placeholder="请输入手机"
                   value={this.state.tellphone}
                   onChange={this.handleChange}
+                  onPressEnter={this.handleSubmit}
                 />
             </React.Fragment>
            ) : ''

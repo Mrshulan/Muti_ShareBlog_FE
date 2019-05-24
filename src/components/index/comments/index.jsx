@@ -48,17 +48,8 @@ class ArticleComments extends Component {
       if(res.status === 200) {
         message.success(res.message)
         this.setState({ value: '' }, () => {
-          const created = new Date()
-          const newComment = {
-            _id: created,
-            from: {
-              username: this.props.username,
-              avatar: this.props.avatar,
-            },
-            content,
-            created,
-          }
-          this.props.addCommentsList(newComment)
+          // 重新获取文章数据
+          this.fetchDataAgain()
         })
       }
       this.setState({ submitting: false })    
@@ -98,9 +89,13 @@ class ArticleComments extends Component {
     )
   }
 
+  fetchDataAgain = () => {
+    this.props.fetchData(this.props.articleId)
+  }
+
   render() {
     const { submitting, value } = this.state
-    const { username, avatar, commentsList} = this.props
+    const { username, avatar, commentsList, fetchData, articleId} = this.props
 
     return (
       <div className="comment-wrapper">
@@ -132,7 +127,7 @@ class ArticleComments extends Component {
             />
           }
         />
-        <CommentsList list={commentsList}></CommentsList>
+        <CommentsList fetchData={fetchData} articleId={articleId} list={commentsList}></CommentsList>
       </div>
     )
   }

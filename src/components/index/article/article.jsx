@@ -82,11 +82,6 @@ class ArticleDetail extends Component {
     })
   } 
 
-  addCommentsList = item => {
-    this.setState({
-      commentsList: [item, ...this.state.commentsList]
-    })
-  }
   // simplemde源码里的用来统计字数的
   wordCount(data) {
     const pattern = /[a-zA-Z0-9_\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
@@ -160,7 +155,7 @@ class ArticleDetail extends Component {
 					</Button>
 				</div>
 
-        <ArticleComments articleId={this.props.match.params.id} commentsList={commentsList} addCommentsList={this.addCommentsList} ></ArticleComments>
+        <ArticleComments articleId={this.props.match.params.id} commentsList={commentsList} fetchData={this.fetchData} ></ArticleComments>
       </div>
     )
   }

@@ -5,52 +5,66 @@ const Comment = require("../Models/comment")
 // 文章评论保存
 exports.save = async ctx => {
   let message = {
-    status: 403,
-    message: "登录才能发表"
+    status: 200,
+    message: "评论成功"
   }
 
-  if (ctx.session.isNew) return ctx.body = message;
+  const { article, content, isSub, fatherId } = ctx.request.body
+  let data = {
+    content,
+    from: ctx.session.uid
+  }
+  if(!isSub) {
+    
+    data.article = article
 
-  const data = ctx.request.body
-  data.from = ctx.session.uid
-
-  const _comment = new Comment(data)
-
-  await _comment
-    .save()
-    .then(data => {
-      message = {
-        status: 200,
-        message: "评论成功"
-      }
-      // 更新当前文章的评论计数器
-      Article.updateOne({
-          _id: data.article
-        }, {
-          $inc: {
-            commentNum: 1
-          }
-        }, err => {
-          if (err) return console.log(err)
-        })
-
-      User
-        .updateOne({
-          _id: data.from
-        }, {
-          $inc: {
-            commentNum: 1
-          }
-        }, err => {
-          if (err) return console.log(err)
-        })
-    })
-    .catch(err => {
-      message = {
-        status: 403,
-        message: err
-      }
-    })
+    const _comment = new Comment(data)
+    await _comment
+      .save()
+      .then(data => {    
+        // 更新当前文章的评论计数器
+        Article.updateOne({
+            _id: data.article
+          }, {
+            $inc: {
+              commentNum: 1
+            }
+          }, err => {
+            if (err) return console.log(err)
+          })
+  
+        User
+          .updateOne({
+            _id: data.from
+          }, {
+            $inc: {
+              commentNum: 1
+            }
+          }, err => {
+            if (err) return console.log(err)
+          })
+      })
+      .catch(err => {
+        message = {
+          status: 403,
+          message: err
+        }
+      })
+  } else {
+    Comment
+        .updateOne(
+          {_id: fatherId},
+          {$push: {sub: data} },
+          err => {
+            if (err) {
+              message = {   
+                status: 403,
+                message: err
+              }
+              return console.log(err)
+            }
+          })
+  }
 
   ctx.body = message
 }

@@ -10,12 +10,26 @@ const CommentSchema = new Schema({
   article: {
     type: ObjectId,
     ref: "articles"
+  },
+  sub: {
+    type: [
+      new Schema({
+        from: {
+          type: ObjectId,
+          ref: "users"
+        },
+        content: String,
+        created: { type: Date, default: new Date() }
+      }),
+    ],
   }
 },{
   versionKey: false,
   timestamps: {
     createdAt: "created"
-  }
+  },
+  strict: 'throw',
+  useNestedStrict: true
 })
 
 // 设置remove后置钩子

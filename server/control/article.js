@@ -103,6 +103,7 @@ exports.details = async ctx => {
     })
     .sort("-created")
     .populate("from", "username avatar")
+    .populate("sub.from", "username avatar")
     .then(data => data)
     .catch(err => {
       console.log(err)

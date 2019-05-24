@@ -89,7 +89,7 @@ exports.del = async ctx => {
   const commentId = ctx.params.id;
 
   let res = {
-    state: 200,
+    status: 200,
     message: "删除成功"
   }
   // 不能绕过remove方法使用deleteOne(勾不住钩子)

@@ -57,8 +57,8 @@ app.use(session(CONFIG, app))
 // 配置 koa-body 处理 post 请求数据
 app.use(body())
 
-// 配置静态资源目录
-app.use(staticSource(join(__dirname, "public")))
+// 配置静态资源目录 (强 + 协)
+app.use(staticSource(join(__dirname, "public"), { maxage: '86400000' }))
 
 // 注册路由信息
 app.use(router.routes()).use(router.allowedMethods())

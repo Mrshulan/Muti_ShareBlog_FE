@@ -39,6 +39,13 @@ class CommentsCol extends Component {
         dataIndex: 'content',
       },
       {
+        title: '跟评论数',
+        dataIndex: 'sub',
+        render: (arr) => {
+          return arr && arr.length
+        }
+      },
+      {
         title: '发布时间',
         dataIndex: 'created',
         render: (text) => {

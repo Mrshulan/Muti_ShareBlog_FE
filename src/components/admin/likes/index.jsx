@@ -29,7 +29,7 @@ class CommentsCol extends Component {
         render: (text, record) => {
           return (
             <div className="action">
-              {record.article.title}
+              {record.article && record.article.title}
             </div>
           )
         }
@@ -37,22 +37,20 @@ class CommentsCol extends Component {
       {
         title: '当前人气',
         render: (text, record) => {
-          return (
-             record.article.likeNum
-          )
+          return record.article && record.article.likeNum
         }
       },
       {
         title: '喜欢时间',
         dataIndex: 'createdAt',
-        render: (text) => {
-          return timestampToTime(text, true)
+        render: (text, record) => {
+          return record.article && timestampToTime(text, true)
         }
       },
       {
         title: '操作',
         render: (text, record) => {
-          return (
+          return record.article && (
             <div className="action">
               <Link to={`/article/${record.article._id}`}>查看</Link>
               <Divider type="vertical" />

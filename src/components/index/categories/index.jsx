@@ -4,7 +4,7 @@ import axios from '../../../utils/axios'
 import './index.less'
 import { Badge } from 'antd'
 
-const Categoires = () => {
+const Categoires = ({selfCategories}) => {
   const [ list, setList ] = useState([
     {
       name: '前端',

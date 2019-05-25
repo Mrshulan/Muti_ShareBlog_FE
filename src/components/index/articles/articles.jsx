@@ -134,6 +134,7 @@ class Articles extends Component {
             <div className="content">
               <Divider orientation="left" onClick={() => this.jumpTo(item._id)}> 
                 <span className="title">{item.title}</span>
+                {item.isTop && <Tag color={'#00B38A'} style={{ margin: '0px 7px' }} >顶</Tag>}
                 <Icon type="folder" style={{ margin: '0px 7px' }} />
                 {
                   item.categories.map((v) => {

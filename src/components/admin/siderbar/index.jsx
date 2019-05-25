@@ -21,7 +21,9 @@ class Siderbar extends Component {
 
   renderMenu = data => {
     const renderRoute = (item, routeContextPath) => {
-      if(this.props.role === '1' && item.path === 'users') return 
+      if(this.props.role === '1' && item.path === 'users') return
+      if(this.props.role === '1' && item.path === 'userArticles') return
+      if(this.props.role === '1' && item.path === 'categories') return
       let newContextPath = item.path ? `${routeContextPath}/${item.path}` : routeContextPath
       if(item.childRoutes) {
         return (

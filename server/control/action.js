@@ -1,6 +1,6 @@
 const Article = require("../Models/article")
 
-const Categories = [
+let Categories = [
   {
     name: '前端',
     linkname: 'frontend'        
@@ -34,25 +34,58 @@ const Categories = [
     linkname: 'Algorithm'
   }
 ]
+
+let addCategories = []
+
 // 查询文章分类
 exports.getCategories = async (ctx) => {
-  // promise包装
-  let countArticles = (item) => {
-    return new Promise((resolve) => {
-      Article.find({categories: item.linkname }).then(data => {resolve(data)})
-    }).then(data => {
-      item.countArticles = data.length
-      return item
-    }).catch(err => {
-      console.error(err)
-    })
-  }
-  // 并发查询
-  let result = await Promise.all(Categories.map(item => {
-    return countArticles(item)
-  }))
+  const { isUnique } = ctx.request.query
+  if(!isUnique) {
+    // promise包装
+    let countArticles = (item) => {
+      return new Promise((resolve) => {
+        Article.find({categories: item.linkname }).then(data => {resolve(data)})
+      }).then(data => {
+        item.countArticles = data.length
+        return item
+      }).catch(err => {
+        console.error(err)
+      })
+    }
+    // 并发查询
+    let result = await Promise.all(Categories.concat(addCategories).map(item => {
+      return countArticles(item)
+    }))
 
-  ctx.body = result
+    ctx.body = result
+  } else {
+    ctx.body = addCategories
+  }
+}
+
+// 添加文章分类
+exports.addCategories = async (ctx) => {
+  const { name } = ctx.request.body 
+
+  addCategories.push({name, linkname: name, isNew: true})
+  ctx.body = {
+    status: 200,
+    message: '新增类别成功'
+  }
+}
+
+// 删除文章分类
+exports.delCategories = async (ctx) => {
+  const name  = ctx.params.id
+
+  addCategories = addCategories.filter(item => {
+    return !(item.name === name)
+  })
+
+  ctx.body = {
+    status: 200,
+    message: '删除类别成功'
+  }
 }
 
 // 获取热门文章 按照点赞数量

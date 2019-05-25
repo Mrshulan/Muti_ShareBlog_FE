@@ -7,6 +7,8 @@ import CommentsManage from '../components/admin/comments'
 import LikesManage from '../components/admin/likes'
 import AvatarManage from "../components/admin/info/avatar/index"
 import InfoManage from "../components/admin/info/profile/index"
+import UserArticlesManager from '../components/admin/useArticles'
+import CategtoriesManager from '../components/admin/categories'
 import NotFound from '../components/404/index'
 
 export default {
@@ -36,6 +38,12 @@ export default {
       component: UsersManage
     },
     {
+      path: 'categories',
+      icon: 'edit',
+      name: '分类管理',
+      component: CategtoriesManager
+    },
+    {
       path: 'articles',
       icon: 'edit',
       name: '我的文章',
@@ -52,6 +60,12 @@ export default {
       icon: 'like',
       name: '我喜欢的',
       component: LikesManage
+    },
+    {
+      path: 'userArticles',
+      icon: 'edit',
+      name: '文章管理',
+      component: UserArticlesManager
     },
     { path: '*', component: NotFound}
   ]

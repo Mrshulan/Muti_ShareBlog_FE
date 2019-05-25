@@ -53,6 +53,11 @@ class Edit extends Component {
   }
 
   componentDidMount() {
+    axios.get('/categories', { params: {isUnique: true} }).then(data => {
+      this.setState({
+        categoryList: [...this.state.categoryList, ...data]
+      })
+    })
     this.smde = new SimpleMDE({
       element: document.getElementById('editor'),
       autofocus: true,

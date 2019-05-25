@@ -20,6 +20,14 @@ const ArticleSchema = new Schema({
     type: [String],
     default: ['JavaScript']
   },
+  isTop: {
+    type: Boolean,
+    default: false
+  },
+  isBan: {
+    type: Boolean,
+    default: false
+  }
 },{
   versionKey: false,
   timestamps: {

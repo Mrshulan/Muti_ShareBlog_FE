@@ -27,6 +27,8 @@ router.put("/article", user.keepLog, article.add)
 
 // 文章获取列表
 router.get('/articlesList', article.getArticleList)
+// 文章获取列表
+router.get('/getUserArticle', user.keepLog, article.userArtlist)
 
 // 点赞文章列表
 router.get('/likelist', user.keepLog, article.getLikeList)
@@ -34,6 +36,8 @@ router.get('/likelist', user.keepLog, article.getLikeList)
 router.post('/article/like', user.keepLog, article.like)
 // 文章详情页 路由
 router.get("/article/:id", user.keepLog, article.details)
+// 文章顶置和封杀操作
+router.post("/article/:id", user.keepLog, article.topOrBan)
 
 // 发表评论
 router.put("/comment", user.keepLog, comment.save)
@@ -69,6 +73,10 @@ router.del('/user/:id', user.keepLog, user.del)
 
 // 获取分类数据
 router.get('/categories', action.getCategories)
+// 增加分类数据
+router.put('/addCategories', user.keepLog, action.addCategories)
+// 增加分类数据
+router.del('/delCategories/:id', user.keepLog, action.delCategories)
 // 获取热门
 router.get('/hot', action.getHotArticles)
 

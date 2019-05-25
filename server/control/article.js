@@ -52,39 +52,55 @@ exports.add = async ctx => {
 
 // 获取文章列表
 exports.getArticleList = async ctx => {
-  let { page = 1, pageSize = 5, categories, keyword } = ctx.query
+  let { page = 1, pageSize = 5, categories, keyword} = ctx.query
   pageSize = +pageSize
   page--
 
   // 条件判断
-  let condition = {}
+  let condition = {isBan: false}
   if(categories) {
-    condition = { categories }
+    condition = { ...condition, categories }
   } else if (keyword) {
     condition = {
+      ...condition,
       $or: [
         { title: { $regex: keyword, $options: '$i' }},
         { content: { $regex: keyword, $options: '$i' }}
-      ]
+      ],
     }
   }
+  // await 处理并发
+  let Promises = []
+  Promises.push(async () => await Article.find(condition).then(data => data.length))
+  Promises.push(async () => await Article
+  .find({ isTop: true, isBan: false })
+  .sort("-created")
+  .populate({
+    path: "author",
+    select: "_id username avatar"
+  })
+  .then(data => data)
+  .catch(err => console.log(err)))
+  Promises.push(async () => await Article
+  .find(condition)
+  .sort("-created")
+  .skip(pageSize * page)
+  .limit(pageSize)
+  .populate({
+    path: "author",
+    select: "_id username avatar"
+  })
+  .then(data => data)
+  .catch(err => console.log(err)))
 
-  const total = await Article.find(condition).then(data => data.length)
-  const artList = await Article
-    .find(condition)
-    .sort("-created")
-    .skip(pageSize * page)
-    .limit(pageSize)
-    .populate({
-      path: "author",
-      select: "_id username avatar"
-    })
-    .then(data => data)
-    .catch(err => console.log(err))
+  const resultArr = []
+  for (const promise of Promises) {
+    resultArr.push(await promise())
+  }
 
   ctx.body = {
-    artList,
-    total,
+    artList: resultArr[1].concat(resultArr[2]),
+    total: resultArr[0],
   }
 }
 
@@ -182,6 +198,40 @@ exports.like = async ctx => {
   }
   ctx.body = message
 }
+
+// 顶置或封杀
+exports.topOrBan = async ctx => {
+  let message = {
+    status: 200,
+    message: '操作成功'
+  }
+
+  const _id = ctx.params.id
+  const { isTop, isBan } = ctx.request.body
+
+  if(isTop !== undefined) {
+    Article.updateOne({_id}, { $set: { isTop }}, err => {
+      if (err) {
+        message = {
+          status: 403,
+          message: err
+        }
+      }
+    })
+  } else if (isBan !== undefined) {
+    Article.updateOne({_id}, { $set: { isBan }}, err => {
+      if (err) {
+        message = {
+          status: 403,
+          message: err
+        }
+      }
+    })
+  }
+
+  ctx.body = message
+}
+
 // 喜欢列表
 exports.getLikeList = async ctx => {
   const uid = ctx.session.uid;
@@ -199,7 +249,7 @@ exports.getLikeList = async ctx => {
     data
   }
 }
-// admin 文章列表
+// 文章列表
 exports.artlist = async ctx => {
   const uid = ctx.session.uid;
   const data = await Article.find({
@@ -212,6 +262,17 @@ exports.artlist = async ctx => {
     data
   }
 }
+// 管理员获取所有文章
+exports.userArtlist = async ctx => {
+  const data = await Article.find()
+
+  ctx.body = {
+    status: 200,
+    count: data.length,
+    data
+  }
+}
+
 // 删除对应 id 的文章
 exports.del = async ctx => {
   const _id = ctx.params.id

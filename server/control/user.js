@@ -83,7 +83,8 @@ exports.login = async ctx => {
         ctx.session = {
           username,
           uid: data[0]._id,
-          role: data[0].role
+          role: data[0].role,
+          loginTimetamp: Date.now() 
         }
         response = { status: 200, message: '你已经登录成功', username, userId: data[0]._id, avatar: data[0].avatar, role: data[0].role, tellphone: data[0].tellphone, info: data[0].info}
       }
@@ -97,15 +98,24 @@ exports.login = async ctx => {
 // 确定和记录 保证同一个session信息不会永久有效，又能让正常的、频繁使用的用户免除登录
 exports.keepLog = async (ctx, next) => {
   const currentTime = Date.now()
-  if (currentTime <= ctx.session._expire) { // 有效期间内
+  
+  if (currentTime <= (ctx.session.loginTimetamp + 8640000)) { // 有效期间内
     // 快要过期的一个小时续期
-    if(0 < ctx.session._expire - currentTime && ctx.session._expire - currentTime < 60 * 60 * 1000) {
+    if(0 < (ctx.session.loginTimetamp + 8640000) - currentTime &&
+      (ctx.session.loginTimetamp + 8640000) - currentTime < (60 * 60 * 1000)) {
       ctx.session = {
-        ...ctx.session
+        ...ctx.session,
+        loginTimetamp: Date.now()
       }
     }
+    await next() //移交下一个中间件
+  } else if (currentTime > (ctx.session.loginTimetamp + 8640000)) {
+    ctx.body = {
+      status: 403,
+      message: '登录过期请退出重新登录'
+    }
   }
-  await next() //移交下一个中间件
+
 }
 
 // 用户退出中间件

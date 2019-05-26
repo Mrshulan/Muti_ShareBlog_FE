@@ -5,6 +5,8 @@ const session = require('koa-session')
 const cors = require("@koa/cors")
 const staticSource = require('koa-static')
 const router = require('./routers/router')
+const check = require('./middlewares/check')
+const errorHandle = require('./middlewares/errorHandle')
 const { SessionStore } =require('./Models/sessionStore')
 
 const {
@@ -25,34 +27,20 @@ const CONFIG = {
   store: new SessionStore()
 }
 
-// 被踢出后中间件(可用来错误上报)
-app.use(async (ctx, next) => {
-  try {
-    await next()
-  } catch(err) {
-    if(/data/.test(err.message)) {
-      // 覆盖koa-session的返回
-      ctx.cookies.set('MRSHULAN', '')
-      ctx.cookies.set('MRSHULAN.sig', '')
-      ctx.body = {
-        status: -1,
-        message: '被迫登出,请重新登录'
-      }
-    } else {
-      console.error(err)
-    }
-  }
-})
 // 跨域
 app.use(cors({
   origin: 'http://127.0.0.1:3000',
   credentials: true,
 }))
 
+app.use(errorHandle)
+
 // 注册日志模块
 app.use(logger())
 // 注册session
 app.use(session(CONFIG, app))
+  .use(check)
+
 
 // 配置 koa-body 处理 post 请求数据
 app.use(body())

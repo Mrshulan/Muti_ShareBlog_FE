@@ -15,33 +15,24 @@ router.get('/', async ctx => {
 
 // 注册用户 路由
 router.post("/register", user.reg)
-
 // 用户登录 路由
 router.post("/login", user.login)
-
 // 用户退出
 router.get("/logout", user.logout)
 
 // 文章添加
 router.put("/article", user.keepLog, article.add)
-
 // 文章获取列表
 router.get('/articlesList', article.getArticleList)
-// 文章获取列表
-router.get('/getUserArticle', user.keepLog, article.userArtlist)
-
 // 点赞文章列表
 router.get('/likelist', user.keepLog, article.getLikeList)
 // 文章点赞
 router.post('/article/like', user.keepLog, article.like)
 // 文章详情页 路由
 router.get("/article/:id", user.keepLog, article.details)
-// 文章顶置和封杀操作
-router.post("/article/:id", user.keepLog, article.topOrBan)
 
 // 发表评论
 router.put("/comment", user.keepLog, comment.save)
-
 
 // 头像上传
 router.post("/upload", async (ctx, next) => {
@@ -59,26 +50,31 @@ router.post("/upload", async (ctx, next) => {
 router.get("/user/comments", user.keepLog, comment.comlist)
 // 获取用户的所有文章
 router.get("/user/articles", user.keepLog, article.artlist)
-// 获取用户
-router.get("/user/users", user.keepLog, user.usrlist)
-
+// 修改用户信息
 router.post('/user/userinfo', user.keepLog, user.userinfo)
 
 // 删除用户的评论
 router.del("/comment/:id", user.keepLog, comment.del)
 // 删除用户文章
 router.del("/article/:id", user.keepLog, article.del)
-// 删除用户
-router.del('/user/:id', user.keepLog, user.del)
 
 // 获取分类数据
 router.get('/categories', action.getCategories)
-// 增加分类数据
-router.put('/addCategories', user.keepLog, action.addCategories)
-// 增加分类数据
-router.del('/delCategories/:id', user.keepLog, action.delCategories)
 // 获取热门
 router.get('/hot', action.getHotArticles)
 
+// 管理员权限
+// 增加分类数据
+router.put('/addCategories', user.keepLog, action.addCategories)
+// 删除分类数据
+router.del('/delCategories/:id', user.keepLog, action.delCategories)
+// 删除用户
+router.del('/user/:id', user.keepLog, user.del)
+// 文章顶置和封杀操作
+router.post("/article/:id", user.keepLog, article.topOrBan)
+// 文章获取列表
+router.get('/getUserArticle', user.keepLog, article.userArtlist)
+// 获取用户
+router.get("/user/users", user.keepLog, user.usrlist)
 
 module.exports = router

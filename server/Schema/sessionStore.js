@@ -8,7 +8,7 @@ const SessionSchema = new Schema({
   },
   updatedAt: {
     default: new Date(),
-    expires: 86400, // 1 day
+    expires: 8640000, // 1 day
     type: Date
   }
 }, {

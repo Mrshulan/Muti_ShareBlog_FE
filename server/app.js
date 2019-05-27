@@ -29,7 +29,7 @@ const CONFIG = {
 
 // 跨域
 app.use(cors({
-  origin: 'http://127.0.0.1:3000',
+  origin: 'http://mrshulan.xin',
   credentials: true,
 }))
 
@@ -54,3 +54,41 @@ app.use(router.routes()).use(router.allowedMethods())
 app.listen(6001, () => {
   console.log("项目启动成功，监听在6001端口")
 })
+
+{ 
+  const encrypt = require("./util/encrypt")
+  const User = require('./Models/user')
+  const crypto = require('crypto')
+  const hash = crypto.createHash('md5')
+  const rand = require('csprng')
+  const vkey = rand(160, 36)
+
+
+  User
+    .find({
+      username: "admin"
+    })
+    .then(data => {
+      if (data.length === 0) {
+        new User(
+	      {
+            username: "admin",
+            password: encrypt({password: hash.update("18473871766admin").digest("hex"), vkey}),
+            vkey,
+            tellphone: 18473871766,
+            role: "666",
+            commentNum: 0,
+            articleNum: 0
+          })
+          .save()
+          .then(data => {
+            console.log("管理员用户名 -> admin, 密码 -> 18473871766")
+          })
+          .catch(err => {
+            console.log("管理员账号检查失败")
+          })
+      } else {
+        console.log("管理员用户名 -> admin, 密码 -> 18473871766")
+      }
+    })
+}

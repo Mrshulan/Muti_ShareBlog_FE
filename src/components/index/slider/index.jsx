@@ -5,7 +5,7 @@ import Categories from '../categories/index'
 const isPro = process.env.NODE_ENV === 'production'
 
 const SliderRight = ({data}) => {
-  let {avatar, username, tellphone, info: { email, weibo,  signature} } = data
+  let { avatar, username, tellphone, info: { email, weibo,  signature} } = data
   let link = [
         {
           url: 'https://github.com/Mrshulan',
@@ -28,11 +28,11 @@ const SliderRight = ({data}) => {
     </a>
   ))
   // 处理一下头像链接
-  avatar = isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001' + avatar
+  // avatar = isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001' + avatar
 
   return ( 
   <div className="right">
-      <Avatar className="right-logo" src={avatar} size={130} icon="user" />
+      <Avatar className="right-logo" src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + avatar} size={130} icon="user" />
       <div className="title">{username || '你的名字'}</div>
       <div className="right-signature">
         { signature || '像狗一样的学习,像狗一样的学习' }

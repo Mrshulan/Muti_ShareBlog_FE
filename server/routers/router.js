@@ -9,6 +9,8 @@ const upload = require("../util/upload")
 
 const router = new Router()
 
+router.prefix('/api')
+
 router.get('/', async ctx => {
   ctx.body = '多人分享博客接口页面'
 })

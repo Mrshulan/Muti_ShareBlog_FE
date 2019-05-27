@@ -5,6 +5,8 @@ import { connect} from 'react-redux'
 import { Avatar, Icon, Dropdown, Menu } from 'antd'
 import { actions as authActions } from '../../../redux/modules/auth'
 import './index.less'
+const isPro = process.env.NODE_ENV === 'production'
+
 
 class Header extends Component { 
   handleLogout = () => {
@@ -38,7 +40,7 @@ class Header extends Component {
         <div className="header-right">
           <Dropdown overlay={this.renderDropDownMenu()}>
             <span>
-              <Avatar src={'http://localhost:6001' + avatar} /> { username }
+              <Avatar src={(isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001') + avatar} /> { username }
             </span>
           </Dropdown>
         </div>

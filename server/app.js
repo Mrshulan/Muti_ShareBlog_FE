@@ -29,7 +29,7 @@ const CONFIG = {
 
 // 跨域
 app.use(cors({
-  origin: 'http://mrshulan.xin',
+  origin: 'http://127.0.0.1:3000',
   credentials: true,
 }))
 

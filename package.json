@@ -2,7 +2,6 @@
   "name": "muti_shareblog_fe",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://mrshulan.xin/blog",
   "dependencies": {
     "@babel/core": "7.2.2",
     "@svgr/webpack": "4.1.0",

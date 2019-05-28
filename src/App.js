@@ -35,7 +35,7 @@ class App extends Component {
   render() {
     const children = this.renderRoutes(routes, '/')
     return (
-      <Router basename='/blog'>
+      <Router >
         {children}
       </Router>
     );

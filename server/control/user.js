@@ -98,7 +98,6 @@ exports.login = async ctx => {
 // 确定和记录 保证同一个session信息不会永久有效，又能让正常的、频繁使用的用户免除登录
 exports.keepLog = async (ctx, next) => {
   const currentTime = Date.now()
-  
   if (currentTime <= (ctx.session.loginTimetamp + 8640000)) { // 有效期间内
     // 快要过期的一个小时续期
     if(0 < (ctx.session.loginTimetamp + 8640000) - currentTime &&
@@ -114,8 +113,12 @@ exports.keepLog = async (ctx, next) => {
       status: 403,
       message: '登录过期请退出重新登录'
     }
+  } else {
+    ctx.body = {
+      status: 403,
+      message: '请你先登录哦'
+    }
   }
-
 }
 
 // 用户退出中间件

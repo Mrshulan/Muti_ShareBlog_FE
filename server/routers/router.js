@@ -9,7 +9,7 @@ const upload = require("../util/upload")
 
 const router = new Router()
 
-router.prefix('/api')
+// router.prefix('/api')
 
 router.get('/', async ctx => {
   ctx.body = '多人分享博客接口页面'
@@ -31,8 +31,7 @@ router.get('/likelist', user.keepLog, article.getLikeList)
 // 文章点赞
 router.post('/article/like', user.keepLog, article.like)
 // 文章详情页 路由
-router.get("/article/:id", user.keepLog, article.details)
-
+router.get("/article/:id", article.details)
 // 发表评论
 router.put("/comment", user.keepLog, comment.save)
 

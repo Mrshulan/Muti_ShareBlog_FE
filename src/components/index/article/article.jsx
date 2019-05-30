@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { Icon, Avatar, message, Button } from 'antd';
 
 import './index.less'
-import LoadingCom from '../load/loading';
-import { translateMarkdown, timestampToTime } from '../../../utils/utils';
-import axios from '../../../utils/axios'
-import ArticleComments from '../comments'
+import LoadingCom from '../load/loading'
+import { translateMarkdown, timestampToTime } from '@/utils/utils'
+import axios from '@/utils/axios'
+import ArticleComments from './comments'
 const isPro = process.env.NODE_ENV === 'production'
 
 class ArticleDetail extends Component {

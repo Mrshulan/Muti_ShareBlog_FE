@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
-import { actions as authActions } from '../../../../redux/modules/auth'
+import { actions as authActions } from '@/redux/modules/auth'
 import { Input, Button, Icon, message} from 'antd'
 import './index.less'
-import axios from '../../../../utils/axios'
+import axios from '@/utils/axios'
 
 
 class InfoManage extends Component{

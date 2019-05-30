@@ -5,8 +5,8 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import LoadingCom from '../load/loading'
 import LoadedCom from '../load/loadend'
 import './index.less'
-import axios from '../../../utils/axios'
-import { translateMarkdown, timestampToTime } from '../../../utils/utils'
+import axios from '@/utils/axios'
+import { translateMarkdown, timestampToTime } from '@/utils/utils'
 const isPro = process.env.NODE_ENV === 'production'
 
 const NoData = ({ keyword, categories}) => (

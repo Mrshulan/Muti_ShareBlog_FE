@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Input, Tooltip, Icon, Tag, message } from 'antd'
-import axios from '../../../utils/axios'
+import axios from '@/utils/axios'
 
 class CategoriesCol extends Component {
   state = {

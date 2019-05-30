@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Table, Button, Modal, message } from 'antd'
-import axios from '../../../utils/axios'
+import axios from '@/utils/axios'
 
 
 class UsersCol extends Component {

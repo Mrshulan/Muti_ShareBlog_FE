@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react'
 import { Comment, Avatar, Tooltip, message, Input, Button} from 'antd'
-import { translateMarkdown, timestampToTime } from '../../../utils/utils'
-import axios from '../../../utils/axios'
+import { translateMarkdown, timestampToTime } from '../../../../utils/utils'
+import axios from '@/utils/axios'
 
 const isPro = process.env.NODE_ENV === 'production'
 

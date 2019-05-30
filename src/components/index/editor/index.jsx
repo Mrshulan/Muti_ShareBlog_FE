@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { Button, Input, Modal, BackTop, message } from 'antd'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { actions as uiActions} from '../../../redux/modules/ui'
+import { actions as uiActions} from '@/redux/modules/ui'
 
 import SelectCate from './categories'
 import './index.less'
-import { translateMarkdown } from '../../../utils/utils'
-import axios from '../../../utils/axios'
+import { translateMarkdown } from '@/utils/utils'
+import axios from '@/utils/axios'
 
 import SimpleMDE from "simplemde"
 import 'simplemde/dist/simplemde.min.css'

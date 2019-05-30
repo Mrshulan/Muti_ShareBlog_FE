@@ -2,15 +2,15 @@ import React, { Component, Fragment} from 'react'
 import { Link,withRouter } from 'react-router-dom'
 import { Layout, Icon, Menu, Row, Col, Input, Button, Avatar ,message} from 'antd';
 
-import AuthModal from '../authModal'
-import ArticlesModal from '../articlesModal'
+import AuthModal from '../../modals/authModal'
+import ArticlesModal from '../../modals/articlesModal'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { actions as authActions} from '../../../redux/modules/auth'
-import { actions as uiActions} from '../../../redux/modules/ui'
+import { actions as authActions} from '../../../../redux/modules/auth'
+import { actions as uiActions} from '../../../../redux/modules/ui'
 
 import './index.less'
-import logo from '../../../assets/logo.jpg'
+import logo from '@/assets/logo.jpg'
 
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -102,8 +102,8 @@ class Nav extends Component {
           }}
         >
           <Row className="container">
-            <Col style={{ float: 'left', marginRight: '20px'}}>
-              <a href="http://mrshulan.com">
+            <Col style={{ float: 'left', marginRight: '20px'}}> 
+              <a href="http://mrshulan.com" target="_blank" without rel="noopener noreferrer">
                 <div className="logo ">
                   <img src={logo} alt="" />
                 </div>

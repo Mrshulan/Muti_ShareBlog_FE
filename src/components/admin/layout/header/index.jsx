@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect} from 'react-redux'
 import { Avatar, Icon, Dropdown, Menu } from 'antd'
-import { actions as authActions } from '../../../redux/modules/auth'
+import { actions as authActions } from '@/redux/modules/auth'
 import './index.less'
 const isPro = process.env.NODE_ENV === 'production'
 

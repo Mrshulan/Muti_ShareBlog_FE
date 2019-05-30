@@ -1,7 +1,7 @@
 import React from 'react'
 import { Icon, Avatar } from 'antd'
 import './index.less'
-import Categories from '../categories/index'
+import Categories from '../../categories'
 const isPro = process.env.NODE_ENV === 'production'
 
 const SliderRight = ({data}) => {

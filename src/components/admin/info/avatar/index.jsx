@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Upload, Icon, message } from 'antd'
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
-import { actions as authActions } from '../../../../redux/modules/auth'
+import { actions as authActions } from '@/redux/modules/auth'
 
 import './index.less'
 

@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { actions as uiActions } from '../../../redux/modules/ui'
-import { actions as authActions } from '../../../redux/modules/auth'
+import { actions as uiActions } from '@/redux/modules/ui'
+import { actions as authActions } from '@/redux/modules/auth'
+import { Comment, Avatar, Form, Button, Divider, Input, Icon, Menu, Dropdown, message } from 'antd'
 
 import CommentsList from './commentsList'
-
+import axios from '@/utils/axios'
 import './index.less'
-import { Comment, Avatar, Form, Button, Divider, Input, Icon, Menu, Dropdown, message } from 'antd'
-import axios from '../../../utils/axios'
 const isPro = process.env.NODE_ENV === 'production'
 const { TextArea } = Input
 

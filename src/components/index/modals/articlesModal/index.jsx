@@ -1,13 +1,12 @@
 import React from 'react'
 import { Modal } from 'antd'
-import Articles from '../articles/articles'
-
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { actions as uiActions } from '../../../redux/modules/ui'
+import { actions as uiActions } from '@/redux/modules/ui'
+import Articles from '../../articles/articles'
 
 
-const ArticlesModal = ({keyword, articlesModalOpen, closeArticlesModal}) => {
+const ArticlesModal = ({ keyword, articlesModalOpen, closeArticlesModal }) => {
   const handleCancel = () => {
     closeArticlesModal()
   }

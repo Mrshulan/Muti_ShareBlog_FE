@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Table, Divider, Modal, message } from 'antd'
-import axios from '../../../utils/axios'
-import { timestampToTime } from '../../../utils/utils'
+import axios from '@/utils/axios'
+import { timestampToTime } from '@/utils/utils'
 
 class CommentsCol extends Component {
   state = {

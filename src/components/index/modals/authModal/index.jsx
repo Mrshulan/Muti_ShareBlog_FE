@@ -3,8 +3,8 @@ import { Modal, Input, Icon, message, Button  } from 'antd'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { actions as authActions } from '../../../redux/modules/auth'
-import { actions as uiActions } from '../../../redux/modules/ui'
+import { actions as authActions } from '@/redux/modules/auth'
+import { actions as uiActions } from '@/redux/modules/ui'
 
 class AuthModal extends Component {
   state = {

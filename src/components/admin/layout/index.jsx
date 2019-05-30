@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Layout } from 'antd'
 
-import SiderBar from '../siderbar/index'
-import HeaderTop from '../header/index'
+import SiderBar from './siderbar'
+import HeaderTop from './header'
 
 const { Sider, Header, Content, Footer } = Layout
 

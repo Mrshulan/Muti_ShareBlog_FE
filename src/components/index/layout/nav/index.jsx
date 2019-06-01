@@ -103,7 +103,7 @@ class Nav extends Component {
         >
           <Row className="container">
             <Col style={{ float: 'left', marginRight: '20px'}}> 
-              <a href="http://mrshulan.com" target="_blank" without rel="noopener noreferrer">
+              <a href="http://mrshulan.com" target="_blank" without="true" rel="noopener noreferrer">
                 <div className="logo ">
                   <img src={logo} alt="" />
                 </div>

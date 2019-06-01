@@ -31,25 +31,45 @@ class Articles extends Component {
   componentDidMount() {
     if(this.props.match) {
       let isHot = this.props.match.path === '/hot'
-      this.fetchList({isHot, page: 1, categories: this.props.match.params.id })
+      if(!isHot) {
+        this.fetchList({categories: this.props.match.params.id })
+      } else {
+        this.fetchList({isHot})
+      }
       // 如果不是走路由过来的而是走弹出层
     } else if (this.props.keyword) {
-      this.fetchList({page: 1, keyword: this.props.keyword })
+      this.fetchList({ keyword: this.props.keyword })
     }
   }
 
-  componentDidUpdate(preProps) {
+  componentDidUpdate(preProps, preState) {
+    // categories切换触发
     if((preProps.match && this.props.match) && preProps.match.params.id !== this.props.match.params.id) {
-      this.fetchList({page: 1, categories: this.props.match.params.id})
+      this.fetchList({categories: this.props.match.params.id})
+    // 搜索关键字触发
     } else if (preProps.keyword !== this.props.keyword) {
-      this.fetchList({page: 1, keyword: this.props.keyword})
+      this.fetchList({keyword: this.props.keyword})
+    // page换页切换
+    } else if (preState.page !== this.state.page) {
+      // 代码没有被复用
+      if(this.props.match) {
+        let isHot = this.props.match.path === '/hot'
+        if(!isHot) {
+          this.fetchList({categories: this.props.match.params.id })
+        } else {
+          this.fetchList({isHot})
+        }
+        // 如果不是走路由过来的而是走弹出层
+      } else if (this.props.keyword) {
+        this.fetchList({ keyword: this.props.keyword })
+      }
     }
   }
 
-  fetchList = ({ isHot, page, categories, keyword }) => {
+  fetchList = ({ isHot, categories, keyword }) => {
     if(!isHot) {
       let params = {
-        page,
+        page: this.state.page,
         pageSize: 5,
       }
 
@@ -69,7 +89,7 @@ class Articles extends Component {
        })
       })
     } else {
-      axios.get('/hot', { params: { page, pageSize: 5 } })
+      axios.get('/hot', { params: { page: this.state.page, pageSize: 5 } })
       .then(res => {
         this.setState({
           isArticlesLoaded: true,
@@ -88,7 +108,7 @@ class Articles extends Component {
     this.setState({
       page: page
     })
-    this.fetchList({page})
+    // this.fetchList({page})
     document.body.scrollTop = document.documentElement.scrollTop = 0;
   }
 

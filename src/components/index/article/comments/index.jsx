@@ -94,7 +94,7 @@ class ArticleComments extends Component {
 
   render() {
     const { submitting, value } = this.state
-    const { username, avatar, commentsList, fetchData, articleId} = this.props
+    const { username, avatar="/avatar/default.jpg", commentsList, fetchData, articleId} = this.props
 
     return (
       <div className="comment-wrapper">

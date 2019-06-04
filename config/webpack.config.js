@@ -246,26 +246,35 @@ module.exports = function(webpackEnv) {
       // https://twitter.com/wSokra/status/969633336732905474
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
-        chunks: 'all',
-        name: false,
+        minSize: 0,
+        maxAsyncRequests: 5,
+        maxInitialRequests: 3,
+        automaticNameDelimiter: '~',
+        name: true,
         cacheGroups: {
           commons: {
             name: 'commons',
-            chunks: 'initial',
+            chunks: 'all',
             minChunks: 2
           },
-          'react-vendor': {
-            test: /[\\/]node_modules[\\/](react|react-dom|redux|react-router-dom)[\\/]/,
+        'react-vendor': {
+            enforce: true,	
+            test: /[\\/]node_modules[\\/](react|react-dom|redux|react-redux|redux-thunk|react-router-dom|react-router|react-router-config|)[\\/]/,
             name: 'react-vendor',
-            priority: 3,
-            reuseExistingChunk: false
-          },
-          'antd-vendor': {
+            chunks: "initial",
+            priority: 10,
+            minChunks: 1,								
+            reuseExistingChunk: true
+        },
+        'antd-vendor': {
             test: /[\\/]node_modules[\\/](antd)[\\/]/,
             name: 'antd-vendor',
-            priority: 2,
-            reuseExistingChunk: false
-          },
+            chunks: "initial",
+            enforce: true,								
+            priority: 9,
+            minChunks: 1,								
+            reuseExistingChunk: true
+        },
         }
       },
       // Keep the runtime chunk separated to enable long term caching

@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { Icon, Tag, Divider, Pagination, Empty,} from 'antd'
-import { Link } from 'react-router-dom'
+import React, { Component, useState, useEffect, useCallback } from 'react'
+import { Icon, Tag, Divider, Pagination, Empty } from 'antd'
+import { Link, withRouter } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import LoadingCom from '../load/loading'
 import LoadedCom from '../load/loadend'
 import './index.less'
 import axios from '@/utils/axios'
 import { translateMarkdown, timestampToTime } from '@/utils/utils'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { actions as uiActions } from '@/redux/modules/ui'
 const isPro = process.env.NODE_ENV === 'production'
 
-const NoData = ({ keyword, categories}) => (
+const NoData = ({ keyword, categories, history, closeArticlesModal}) => (
   <React.Fragment>
     没有关于<span className="keyword">{keyword ? keyword : categories ? categories : "该技术"}</span>的文章！ 
     <br/>
@@ -17,8 +20,14 @@ const NoData = ({ keyword, categories}) => (
   </React.Fragment>
 )
 
+const mapDispatchToProps = dispatch => {
+  return {
+    ...bindActionCreators(uiActions, dispatch)
+  }
+}
+
 // 使用function component 就要忘记class component生命周期一些老毛病,
-const Articles = ({ match, history, keyword }) => {
+const Articles = ({ match, history, keyword, closeArticlesModal}) => {
   const [ data, setData ] = useState({
     isArticlesLoaded: false,
     articlesList: [],
@@ -92,6 +101,7 @@ const Articles = ({ match, history, keyword }) => {
 
   const jumpTo = (id) => {
     history.push('/article/' + id)
+    closeArticlesModal()
   }
 
   const translateMarkdownToDesc = (content) => {
@@ -373,4 +383,4 @@ const Articles = ({ match, history, keyword }) => {
 //   }
 // }
 
-export default Articles
+export default connect(null, mapDispatchToProps)(withRouter(Articles))

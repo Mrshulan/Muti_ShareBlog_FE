@@ -5,7 +5,7 @@ import Categories from '../../categories'
 const isPro = process.env.NODE_ENV === 'production'
 
 const SliderRight = ({data}) => {
-  let { avatar, username, tellphone, info: { email, weibo,  signature} } = data
+  let { avatar='/avatar/default.jpg', username, tellphone, info: { email, weibo,  signature} } = data
   let link = [
         {
           url: 'https://github.com/Mrshulan',
@@ -27,8 +27,6 @@ const SliderRight = ({data}) => {
       />
     </a>
   ))
-  // 处理一下头像链接
-  // avatar = isPro ? 'http://mrshulan.xin' : 'http://127.0.0.1:6001' + avatar
 
   return ( 
   <div className="right">

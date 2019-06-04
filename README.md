@@ -2,11 +2,11 @@
 
 ## 前言
 
-该项目在[多人共享博客v1](https://github.com/Mrshulan/Muti_ShareBlog) (传统的服务端渲染)的基础上实现二次开发，采用前后端分离(CSR)(v2)的模式，在线体验地址 http://mrshulan.xin/blog/
+该项目在[多人共享博客v1](https://github.com/Mrshulan/Muti_ShareBlog) (传统的服务端渲染)的基础上实现二次开发，采用前后端分离(CSR)(v2)的模式，在线体验地址<http://mrshulan.xin/blog/>
 
-目前已经对该项目实现了[服务端同构渲染v3](https://github.com/Mrshulan/Muti_ShareBlog_SSR) (SSR) 在线体验地址 http://mrshulan.xin/blogssr/，不得不说，真的没有白屏loading，感觉非常的舒服，SEO啥的umm 大家都懂~(SSR自带优点)
+目前已经对该项目实现了[服务端同构渲染v3](https://github.com/Mrshulan/Muti_ShareBlog_SSR) (SSR) 在线体验地址<http://mrshulan.xin/blogssr/> ,不得不说，**真的没有白屏loading**，感觉非常的舒服，SEO啥的umm 大家都懂~(SSR自带优点)
 
-项目的打包的体积更小，这跟我没有使用create-react-app 和 nextjs有关吧，webpack做了splitchunk之后有效提升了首屏速度，在Disable cache下 大约从3s提升到了2.3左右。
+项目的打包的体积更小，这跟我没有使用create-react-app 和 nextjs有关吧，webpack做了`splitchunks`之后有效提升了首屏速度，在Disable cache下 大约从3s提升到了2.3左右。
 
 ##  实现功能
 
